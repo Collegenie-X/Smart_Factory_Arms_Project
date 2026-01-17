@@ -13,7 +13,7 @@ graph LR
     B[무료 도구] --> D
     C[실제 AI 활용] --> D
     
-    style D fill:#90EE90
+    style D fill:#90EE90,color:#111
 ```
 
 | 장점 | 설명 |
@@ -110,8 +110,8 @@ graph TB
     
     CHECK -->|성공| END[완성!]
     
-    style START fill:#FF6B6B,color:#fff
-    style END fill:#90EE90,color:#111
+    style START fill:#FF6B6B,color:#fff,color:#111
+    style END fill:#90EE90,color:#111,color:#111
 ```
 
 **예상 소요 시간:**
@@ -139,7 +139,7 @@ graph LR
     B --> C[데이터 다양성<br/>확보]
     C --> D[학습 준비<br/>완료]
     
-    style D fill:#90EE90
+    style D fill:#90EE90,color:#111
 ```
 
 #### 클래스 이름 규칙 (중요!)
@@ -229,7 +229,7 @@ graph LR
     D --> F[공유 링크 획득]
     E --> G[수동 호스팅 필요]
     
-    style F fill:#90EE90
+    style F fill:#90EE90,color:#111
 ```
 
 #### 방법 1: 클라우드 업로드 (권장)
@@ -276,7 +276,7 @@ graph TB
     C --> D[공유 링크 복사]
     D --> E[직접 다운로드<br/>링크로 변환]
     
-    style E fill:#FFE66D
+    style E fill:#FFE66D,color:#111
 ```
 
 **단계:**
@@ -357,7 +357,7 @@ graph LR
     C --> D[Start new project<br/>클릭]
     D --> E[프로젝트명 입력<br/>예: ImageClassifier]
     
-    style E fill:#90EE90
+    style E fill:#90EE90,color:#111
 ```
 
 1. [ai2.appinventor.mit.edu](http://ai2.appinventor.mit.edu) 접속
@@ -443,7 +443,7 @@ graph TB
         E[TMIC Extension<br/>AI 모델]
     end
     
-    style E fill:#FF6B6B,color:#fff
+    style E fill:#FF6B6B,color:#fff,color:#111
 ```
 
 ### 6.2 컴포넌트 추가하기
@@ -678,9 +678,9 @@ graph TD
     SHOW --> READY
     ERROR --> READY
     
-    style INIT fill:#FF6B6B,color:#fff
-    style SHOW fill:#90EE90,color:#111
-    style ERROR fill:#ffcccc
+    style INIT fill:#FF6B6B,color:#fff,color:#111
+    style SHOW fill:#90EE90,color:#111,color:#111
+    style ERROR fill:#ffcccc,color:#111
 ```
 
 ---
@@ -696,7 +696,7 @@ graph LR
     C --> D[앱 로딩<br/>(30초-1분)]
     D --> E[테스트 시작]
     
-    style E fill:#90EE90
+    style E fill:#90EE90,color:#111
 ```
 
 #### MIT AI2 Companion 설치
@@ -1037,7 +1037,7 @@ graph LR
     C --> D[QR 코드<br/>또는 다운로드]
     D --> E[APK 설치]
     
-    style E fill:#90EE90
+    style E fill:#90EE90,color:#111
 ```
 
 **단계:**

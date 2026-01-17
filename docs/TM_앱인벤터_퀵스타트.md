@@ -18,7 +18,7 @@ graph LR
     C --> D[4. 앱인벤터에<br/>Extension 추가]
     D --> E[5. 블록 코딩<br/>완성!]
     
-    style E fill:#90EE90
+    style E fill:#90EE90,color:#111
 ```
 
 **예상 소요 시간:** 2-3시간 (처음 하는 경우)
