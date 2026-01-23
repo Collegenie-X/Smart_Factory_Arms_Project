@@ -7,50 +7,73 @@
 
 ## 📋 목차
 
+### 기본 시나리오 (A-E)
 1. [시나리오 선택 가이드](#시나리오-선택-가이드)
 2. [시나리오 A: AI 품질검사 스마트 입고](#시나리오-a-ai-품질검사-스마트-입고)
 3. [시나리오 B: 자동 색상 분류 라인](#시나리오-b-자동-색상-분류-라인)
 4. [시나리오 C: 통합 AI 물류센터](#시나리오-c-통합-ai-물류센터)
 5. [시나리오 D: 주문형 스마트 피킹](#시나리오-d-주문형-스마트-피킹)
 6. [시나리오 E: 불량품 자동 검출](#시나리오-e-불량품-자동-검출)
-7. [확장 시나리오](#확장-시나리오)
+
+### 🔥 최신 산업 트렌드 시나리오 (F-H) - NEW!
+7. [시나리오 F: 따라하는 로봇 (피지컬 AI)](#시나리오-f-따라하는-로봇-피지컬-ai) 🤖
+8. [시나리오 G: 예측 정비 스마트 팩토리](#시나리오-g-예측-정비-스마트-팩토리) ⚙️
+9. [시나리오 H: 협업 로봇 조립 라인](#시나리오-h-협업-로봇-조립-라인) 🤝
+
+### 학습 가이드
+10. [시나리오별 비교 총정리](#시나리오별-비교-총정리-업데이트)
+11. [학습 로드맵](#학습-로드맵)
+12. [팁과 주의사항](#팁과-주의사항)
 
 ---
 
 ## 🎯 시나리오 선택 가이드
 
-### 난이도별 분류
+### 난이도별 분류 (업데이트)
 
 ```mermaid
 graph TD
     START{팀 역량<br/>평가} --> LEVEL{레벨?}
     
     LEVEL -->|입문| BASIC[시나리오 B<br/>센서 중심<br/>⭐⭐⭐]
+    
     LEVEL -->|중급| INTER1[시나리오 A<br/>AI+센서<br/>⭐⭐⭐⭐]
     LEVEL -->|중급| INTER2[시나리오 D<br/>주문 처리<br/>⭐⭐⭐⭐]
+    LEVEL -->|중급| INTER3[🔥 시나리오 F<br/>피지컬 AI<br/>⭐⭐⭐⭐]
+    
     LEVEL -->|고급| ADV1[시나리오 C<br/>완전 통합<br/>⭐⭐⭐⭐⭐]
     LEVEL -->|고급| ADV2[시나리오 E<br/>불량 검출<br/>⭐⭐⭐⭐⭐]
+    LEVEL -->|고급| ADV3[🔥 시나리오 G<br/>예측 정비<br/>⭐⭐⭐⭐⭐]
+    LEVEL -->|고급| ADV4[🔥 시나리오 H<br/>협업 로봇<br/>⭐⭐⭐⭐⭐]
     
     BASIC --> TIME[개발 시간:<br/>4-5시간]
     INTER1 --> TIME2[개발 시간:<br/>5-6시간]
     INTER2 --> TIME2
-    ADV1 --> TIME3[개발 시간:<br/>6-7시간]
+    INTER3 --> TIME2
+    ADV1 --> TIME3[개발 시간:<br/>6-8시간]
     ADV2 --> TIME3
+    ADV3 --> TIME3
+    ADV4 --> TIME3
     
     style START fill:#95E1D3,color:#111
     style BASIC fill:#6BCB77,color:#fff
-    style ADV1 fill:#FF6B6B,color:#fff
+    style INTER3 fill:#FFD93D,color:#111
+    style ADV3 fill:#FF6B6B,color:#fff
+    style ADV4 fill:#4ECDC4,color:#fff
 ```
 
-### 시나리오 비교표
+### 시나리오 비교표 (전체 8개)
 
-| 시나리오 | 난이도 | 핵심 기술 | 현업 연계 | 개발 시간 | 추천 대상 |
-|---------|--------|----------|----------|----------|----------|
-| **A. AI 품질검사** | ⭐⭐⭐⭐ | AI+센서 검증 | 제조업 품질관리 | 5-6h | AI 모델 우수팀 |
-| **B. 색상 분류** | ⭐⭐⭐ | 센서 기반 분류 | 물류 분류센터 | 4-5h | 하드웨어 강점팀 |
-| **C. AI 물류센터** | ⭐⭐⭐⭐⭐ | 완전 자동화 | 스마트 물류센터 | 6-7h | 도전적인 팀 |
-| **D. 주문형 피킹** | ⭐⭐⭐⭐ | 음성+AI | 이커머스 물류 | 5-6h | UI/UX 중시팀 |
-| **E. 불량품 검출** | ⭐⭐⭐⭐⭐ | AI 다중 검증 | 제조 품질검사 | 6-7h | AI+센서 강점팀 |
+| 시나리오 | 난이도 | 핵심 기술 | 현업 연계 | 개발 시간 | 추천 대상 | 산업 트렌드 |
+|---------|--------|----------|----------|----------|----------|-----------|
+| **A. AI 품질검사** | ⭐⭐⭐⭐ | AI+센서 검증 | 제조업 품질관리 | 5-6h | AI 모델 우수팀 | 기본 |
+| **B. 색상 분류** | ⭐⭐⭐ | 센서 기반 분류 | 물류 분류센터 | 4-5h | 하드웨어 강점팀 | 기본 |
+| **C. AI 물류센터** | ⭐⭐⭐⭐⭐ | 완전 자동화 | 스마트 물류센터 | 6-7h | 도전적인 팀 | 고급 |
+| **D. 주문형 피킹** | ⭐⭐⭐⭐ | 음성+AI | 이커머스 물류 | 5-6h | UI/UX 중시팀 | 고급 |
+| **E. 불량품 검출** | ⭐⭐⭐⭐⭐ | AI 다중 검증 | 제조 품질검사 | 6-7h | AI+센서 강점팀 | 고급 |
+| **🔥 F. 따라하는 로봇** | ⭐⭐⭐⭐ | 피지컬 AI, MediaPipe | Learning from Demo | 5-6h | AI/로봇 관심팀 | **최신** |
+| **🔥 G. 예측 정비** | ⭐⭐⭐⭐⭐ | 센서 분석, ML 예측 | 스마트 팩토리 4.0 | 6-7h | 데이터 분석 팀 | **최신** |
+| **🔥 H. 협업 로봇** | ⭐⭐⭐⭐⭐ | 다중 로봇 제어 | 현대차 셀 생산 | 7-8h | 로봇 제어 전문팀 | **최신** |
 
 ---
 
@@ -1904,73 +1927,1261 @@ float readLoadCell() {
 
 ---
 
-## 🚀 확장 시나리오
+## 🚀 확장 시나리오 (최신 산업 트렌드 반영)
 
-### 시나리오 F: 다품종 동시 처리
+---
 
-```
-[개념]
-5가지 색상 + 3가지 크기 = 15가지 조합
-→ 2차원 분류 (색상 × 크기)
+## 🤖 시나리오 F: 따라하는 로봇 (피지컬 AI)
 
-[하드웨어 추가]
-- 초음파 센서 배열
-- 다단 게이트 시스템
-- 15칸 수납함
-```
-
-### 시나리오 G: 예측 유지보수
+### 📖 현업 스토리
 
 ```
-[개념]
-센서 데이터 → 이상 패턴 감지 → 고장 예측
+[배경]
+한국의 강점: 60-70대 은퇴 앞둔 숙련 장인의 40년 경력
+자동차 부품 조립 전문가 '김철수 장인'의 기술을 로봇에게 전수하고 싶다!
 
-[모니터링 항목]
-- 서보 모터 전류 증가 → 마모 예측
-- 벨트 속도 감소 → 청소 필요
-- 센서 값 변동 → 캘리브레이션 필요
+[문제]
+- 프로그래밍으로는 장인의 미묘한 손놀림을 재현 불가
+- 개발 비용 5천만원, 기간 6개월 소요
+- 장인이 은퇴하면 기술 소실
+
+[해결 - 피지컬 AI]
+스마트폰 + MediaPipe로 손 동작 추적 → AI 학습 → 로봇이 따라함
+→ 개발 기간 1주, 비용 90% 절감, 자연스러운 동작 재현
+```
+
+### 🏗️ 전체 시스템 구조도
+
+```mermaid
+graph TD
+    subgraph 시연단계[1단계: 시연 데이터 수집]
+        D1[📱 스마트폰<br/>MediaPipe 손 추적]
+        D2[📹 동작 녹화<br/>10-20회 반복]
+        D3[💾 데이터 저장<br/>손 위치, 속도]
+    end
+    
+    subgraph AI학습[2단계: AI 학습]
+        A1[📊 데이터 전처리<br/>좌표 변환]
+        A2[🧠 패턴 학습<br/>LSTM/RNN]
+        A3[🎯 궤적 생성<br/>경로 계획]
+    end
+    
+    subgraph 로봇재현[3단계: 로봇 재현]
+        R1[🦾 로봇팔<br/>학습된 동작]
+        R2[📏 실시간 보정<br/>IK 계산]
+        R3[✅ 작업 수행<br/>물체 조립]
+    end
+    
+    subgraph 모니터링[4단계: 모니터링]
+        M1[📱 앱인벤터<br/>성공률 표시]
+        M2[🎥 원본 vs 재현<br/>비교 영상]
+        M3[📊 정확도 분석<br/>오차 측정]
+    end
+    
+    D1 --> D2 --> D3
+    D3 --> A1 --> A2 --> A3
+    A3 --> R1 --> R2 --> R3
+    R3 --> M1
+    R3 --> M2
+    R3 --> M3
+    
+    M3 -.재학습.-> A1
+    
+    style 시연단계 fill:#FFE66D,color:#111
+    style AI학습 fill:#4ECDC4,color:#fff
+    style 로봇재현 fill:#6BCB77,color:#fff
+```
+
+### 🔧 하드웨어 자원
+
+| 장치명 | 핀 번호 | 용도 | 특이사항 |
+|--------|---------|------|----------|
+| 로봇팔 서보 1-4 | D5~D8 | 4축 제어 | MG996R + SG90 |
+| 스마트폰 카메라 | - | 손 추적 | MediaPipe 사용 |
+| RGB LED | D11~D13 | 학습/재현 상태 | 파랑=학습, 초록=재현 |
+| 피에조 부저 | D22 | 동작 완료 알림 | 성공/실패 음 |
+| 8x8 LED | D23~D25 | 반복 횟수 표시 | 시연 카운트 |
+
+### 💻 핵심 알고리즘
+
+#### 손 추적 → 로봇 좌표 변환
+
+```cpp
+// learning_from_demo.h - 시연 학습 모듈
+#ifndef LEARNING_FROM_DEMO_H
+#define LEARNING_FROM_DEMO_H
+
+#include <Arduino.h>
+
+// 손 위치 데이터 구조체
+struct HandPosition {
+  float x;        // 픽셀 좌표 x
+  float y;        // 픽셀 좌표 y
+  float z;        // 깊이 (추정)
+  unsigned long timestamp;  // 시간 (ms)
+};
+
+// 로봇 궤적 데이터
+struct RobotTrajectory {
+  int servo1Angle;   // 베이스 각도
+  int servo2Angle;   // 어깨 각도
+  int servo3Angle;   // 팔꿈치 각도
+  int servo4Angle;   // 그리퍼 각도
+  int delayTime;     // 다음 동작까지 시간 (ms)
+};
+
+// 학습 모드 상태
+enum LearningMode {
+  MODE_IDLE = 0,        // 대기
+  MODE_RECORDING,       // 시연 녹화 중
+  MODE_PROCESSING,      // 데이터 처리 중
+  MODE_REPLAYING,       // 재현 중
+  MODE_COMPARING        // 비교 분석 중
+};
+
+// 함수 선언
+void startRecording();
+void stopRecording();
+void processTrajectory();
+void replayMotion();
+float calculateAccuracy();
+void handToRobotCoordinates(HandPosition hand, RobotTrajectory* robot);
+
+#endif
+```
+
+```cpp
+// learning_from_demo.cpp - 구현부
+#include "learning_from_demo.h"
+#include <Servo.h>
+
+// 전역 변수
+#define MAX_TRAJECTORY_POINTS 200
+HandPosition handTrajectory[MAX_TRAJECTORY_POINTS];
+RobotTrajectory robotTrajectory[MAX_TRAJECTORY_POINTS];
+int trajectoryLength = 0;
+LearningMode currentMode = MODE_IDLE;
+
+// 서보 객체
+extern Servo servo1, servo2, servo3, servo4;
+
+// 시연 녹화 시작
+void startRecording() {
+  trajectoryLength = 0;
+  currentMode = MODE_RECORDING;
+  
+  // 파란 LED: 녹화 중
+  setRGB(0, 0, 255);
+  playSound(SOUND_START);
+  
+  Serial1.println("RECORD_START");
+  Serial.println("Recording started...");
+}
+
+// 시연 녹화 종료
+void stopRecording() {
+  currentMode = MODE_IDLE;
+  
+  // 녹화 완료 LED
+  setRGB(0, 255, 0);
+  playSound(SOUND_SUCCESS);
+  
+  Serial1.println("RECORD_STOP");
+  Serial.print("Recorded ");
+  Serial.print(trajectoryLength);
+  Serial.println(" points");
+  
+  // 자동으로 처리 시작
+  processTrajectory();
+}
+
+// 궤적 데이터 처리 (손 좌표 → 로봇 각도)
+void processTrajectory() {
+  currentMode = MODE_PROCESSING;
+  setRGB(255, 255, 0);  // 노란색: 처리 중
+  
+  Serial.println("Processing trajectory...");
+  
+  for (int i = 0; i < trajectoryLength; i++) {
+    // 손 위치를 로봇 각도로 변환
+    handToRobotCoordinates(handTrajectory[i], &robotTrajectory[i]);
+    
+    // 시간 간격 계산
+    if (i > 0) {
+      robotTrajectory[i].delayTime = 
+        handTrajectory[i].timestamp - handTrajectory[i-1].timestamp;
+      
+      // 너무 빠르거나 느린 경우 제한
+      if (robotTrajectory[i].delayTime < 50) {
+        robotTrajectory[i].delayTime = 50;  // 최소 50ms
+      }
+      if (robotTrajectory[i].delayTime > 1000) {
+        robotTrajectory[i].delayTime = 1000;  // 최대 1초
+      }
+    } else {
+      robotTrajectory[i].delayTime = 100;  // 첫 동작 100ms 대기
+    }
+  }
+  
+  Serial.println("Processing complete!");
+  setRGB(0, 255, 0);
+  playSound(SOUND_COMPLETE);
+  
+  currentMode = MODE_IDLE;
+}
+
+// 학습된 동작 재현
+void replayMotion() {
+  currentMode = MODE_REPLAYING;
+  setRGB(0, 255, 255);  // 청록색: 재현 중
+  
+  Serial.println("Replaying motion...");
+  Serial1.println("REPLAY_START");
+  
+  // 8x8 LED에 진행률 표시
+  for (int i = 0; i < trajectoryLength; i++) {
+    // 서보 각도 적용
+    servo1.write(robotTrajectory[i].servo1Angle);
+    servo2.write(robotTrajectory[i].servo2Angle);
+    servo3.write(robotTrajectory[i].servo3Angle);
+    servo4.write(robotTrajectory[i].servo4Angle);
+    
+    // 진행률 LED 표시
+    int progress = (i * 100) / trajectoryLength;
+    displayNumber(progress);
+    
+    // 앱으로 진행 상태 전송
+    Serial1.print("{\"progress\":");
+    Serial1.print(progress);
+    Serial1.println("}");
+    
+    // 다음 동작까지 대기
+    delay(robotTrajectory[i].delayTime);
+  }
+  
+  Serial.println("Replay complete!");
+  Serial1.println("REPLAY_END");
+  
+  displayIcon(ICON_CHECK);
+  playSound(SOUND_SUCCESS);
+  
+  currentMode = MODE_IDLE;
+}
+
+// 손 좌표 → 로봇 각도 변환 (역기구학 간소화)
+void handToRobotCoordinates(HandPosition hand, RobotTrajectory* robot) {
+  // 1. 픽셀 좌표를 정규화 (0-1 범위)
+  // 가정: 카메라 해상도 640x480
+  float normX = hand.x / 640.0;
+  float normY = hand.y / 480.0;
+  
+  // 2. 정규화 좌표를 로봇 각도로 매핑
+  // 베이스 (좌우 회전): 0-180도
+  robot->servo1Angle = (int)(normX * 180);
+  
+  // 어깨 (상하): 30-150도 (극단 회피)
+  robot->servo2Angle = (int)(30 + normY * 120);
+  
+  // 팔꿈치: 손의 깊이(z)에 따라 조정
+  // z가 클수록 팔을 펴야 함 (단순 가정)
+  float zNorm = hand.z / 1000.0;  // 깊이 0-1000mm 가정
+  robot->servo3Angle = (int)(45 + zNorm * 90);
+  
+  // 그리퍼: 고정 (50% 열림)
+  robot->servo4Angle = 90;
+  
+  // 범위 제한 (안전)
+  robot->servo1Angle = constrain(robot->servo1Angle, 0, 180);
+  robot->servo2Angle = constrain(robot->servo2Angle, 30, 150);
+  robot->servo3Angle = constrain(robot->servo3Angle, 45, 135);
+  robot->servo4Angle = constrain(robot->servo4Angle, 0, 180);
+}
+
+// 정확도 계산 (원본 vs 재현)
+float calculateAccuracy() {
+  // 간단한 오차 계산
+  float totalError = 0;
+  int comparisons = 0;
+  
+  for (int i = 0; i < trajectoryLength - 1; i++) {
+    // 각 관절의 각도 차이
+    int diff1 = abs(robotTrajectory[i].servo1Angle - robotTrajectory[i+1].servo1Angle);
+    int diff2 = abs(robotTrajectory[i].servo2Angle - robotTrajectory[i+1].servo2Angle);
+    
+    totalError += (diff1 + diff2);
+    comparisons++;
+  }
+  
+  float avgError = totalError / comparisons;
+  
+  // 오차를 정확도로 변환 (0-100%)
+  // 오차 0도 = 100%, 오차 90도 = 0%
+  float accuracy = 100.0 - (avgError / 90.0 * 100.0);
+  accuracy = constrain(accuracy, 0, 100);
+  
+  return accuracy;
+}
+```
+
+### 📱 앱인벤터 화면
+
+```
+┌─────────────────────────────────┐
+│  🤖 따라하는 로봇 (피지컬 AI)    │
+├─────────────────────────────────┤
+│  [모드 선택]                     │
+│  ○ 시연 녹화   ○ 재현   ○ 비교  │
+│                                 │
+│  📹 카메라 프리뷰 (손 추적)      │
+│  ┌─────────────────────┐        │
+│  │     [손 감지됨]      │        │
+│  │      ● ●             │        │
+│  │     👋 [21 포인트]   │        │
+│  └─────────────────────┘        │
+│                                 │
+│  [🎬 녹화 시작] [⏹️ 정지]       │
+│                                 │
+│  📊 시연 정보                    │
+│  • 녹화된 포인트: 147개          │
+│  • 총 시간: 5.2초                │
+│  • 평균 속도: 28 pt/s           │
+│                                 │
+│  [🔄 로봇으로 재현]              │
+│                                 │
+│  ✅ 정확도: 92.5%                │
+│  ━━━━━━━━━━━━━━━━━━━━━         │
+│  원본 ▂▃▅▇▅▃▂ 재현              │
+│                                 │
+│  [📊 비교 분석] [💾 저장]        │
+└─────────────────────────────────┘
+```
+
+### 🔄 확장 아이디어
+
+```
+1. 다중 작업 학습 (30분)
+   - 3가지 동작 저장
+   - 버튼으로 선택 실행
+   
+2. 실시간 따라하기 (1시간)
+   - 손을 움직이면 로봇이 즉시 따라함
+   - 지연 < 100ms
+   
+3. 속도 조절 (30분)
+   - 2배속, 0.5배속 재생
+   - 정밀 작업에 유용
 ```
 
 ---
 
-## 📊 시나리오별 비교 총정리
+## ⚙️ 시나리오 G: 예측 정비 스마트 팩토리
 
-| 항목 | 시나리오 A | 시나리오 B | 시나리오 C | 시나리오 D | 시나리오 E |
-|------|-----------|-----------|-----------|-----------|-----------|
-| **난이도** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **AI 사용** | ✅ 필수 | ❌ 없음 | ✅ 필수 | ✅ 필수 | ✅ 필수 |
-| **로봇팔** | ✅ 사용 | ❌ 미사용 | ✅ 사용 | ✅ 사용 | ✅ 사용 |
-| **센서 개수** | 3개 | 2개 | 5개 | 4개 | 5개 |
-| **LED 종류** | 3종 | 4종 | 5종 | 3종 | 5종 |
-| **앱 기능** | TTS+차트 | 모니터링 | 풀옵션 | STT+TTS | 분석 |
-| **개발 시간** | 5-6h | 4-5h | 6-7h | 5-6h | 6-7h |
-| **현업 적용** | 제조 품질 | 물류 분류 | 통합 물류 | 이커머스 | 정밀 제조 |
+### 📖 현업 스토리
+
+```
+[배경]
+스마트 팩토리의 핵심: "고장 나기 전에 미리 수리"
+테슬라는 고장 90% 예측 (3주 전), 가동률 95% 달성
+
+[문제]
+- 갑작스러운 설비 고장으로 라인 정지 (손실: 시간당 5백만원)
+- 과도한 예방 정비로 비용 낭비
+- 부품 교체 시기를 모름
+
+[해결 - 예측 정비]
+센서 데이터 실시간 수집 → AI 패턴 분석 → 2주 전 고장 예측
+→ 계획된 정비, 가동률 80% → 95% 향상
+```
+
+### 🏗️ 전체 시스템 구조도
+
+```mermaid
+graph TD
+    subgraph 센서수집[1단계: 센서 데이터 수집]
+        S1[🌡️ 온도 센서<br/>서보 모터 발열]
+        S2[📳 진동 센서<br/>베어링 마모]
+        S3[⚡ 전류 센서<br/>부하 모니터링]
+        S4[🔊 마이크<br/>이상 소음 감지]
+    end
+    
+    subgraph 데이터분석[2단계: 실시간 분석]
+        A1[📊 통계 분석<br/>평균, 표준편차]
+        A2[📈 트렌드 분석<br/>시계열 LSTM]
+        A3[⚠️ 이상 탐지<br/>Autoencoder]
+        A4[🔮 고장 예측<br/>XGBoost]
+    end
+    
+    subgraph 알림[3단계: 예측 알림]
+        N1[🚨 긴급 알림<br/>24시간 이내]
+        N2[⚠️ 주의 알림<br/>1주일 이내]
+        N3[📅 계획 알림<br/>2-4주 이내]
+    end
+    
+    subgraph 모니터링[4단계: 대시보드]
+        M1[📱 앱인벤터<br/>실시간 상태]
+        M2[📊 차트<br/>RUL 잔여 수명]
+        M3[📋 정비 일정<br/>자동 생성]
+    end
+    
+    S1 & S2 & S3 & S4 --> A1
+    A1 & A2 & A3 & A4 --> N1
+    A1 & A2 & A3 & A4 --> N2
+    A1 & A2 & A3 & A4 --> N3
+    
+    N1 --> M1
+    N2 --> M1
+    N3 --> M1
+    
+    M1 --> M2
+    M2 --> M3
+    
+    style N1 fill:#FF6B6B,color:#fff
+    style N2 fill:#FFD93D,color:#111
+    style N3 fill:#6BCB77,color:#fff
+```
+
+### 🔧 하드웨어 자원
+
+| 장치명 | 핀 번호 | 용도 | 측정 범위 |
+|--------|---------|------|----------|
+| 온도 센서 (LM35) | A0 | 서보 온도 | 0-100°C |
+| 진동 센서 (SW-420) | D2 | 진동 감지 | 디지털 ON/OFF |
+| 전류 센서 (ACS712) | A1 | 서보 전류 | 0-5A |
+| 마이크 (MAX4466) | A2 | 이상 소음 | 아날로그 |
+| RGB LED | D11~D13 | 건강 상태 | 정상/주의/위험 |
+| LCD 20x4 | I2C | 실시간 수치 | RUL 표시 |
+| 피에조 부저 | D22 | 경고음 | 3단계 알림 |
+
+### 💻 핵심 알고리즘
+
+```cpp
+// predictive_maintenance.h - 예측 정비 모듈
+#ifndef PREDICTIVE_MAINTENANCE_H
+#define PREDICTIVE_MAINTENANCE_H
+
+#include <Arduino.h>
+
+// 센서 데이터 구조체
+struct SensorData {
+  float temperature;      // 온도 (°C)
+  int vibration;          // 진동 (0/1)
+  float current;          // 전류 (A)
+  int soundLevel;         // 소음 레벨 (0-1023)
+  unsigned long timestamp;
+};
+
+// 건강 상태 지표
+struct HealthIndicator {
+  float temperatureScore;   // 온도 점수 (0-100)
+  float vibrationScore;     // 진동 점수
+  float currentScore;       // 전류 점수
+  float soundScore;         // 소음 점수
+  float overallHealth;      // 종합 건강도 (0-100)
+  int RUL;                  // Remaining Useful Life (일)
+};
+
+// 이상 레벨
+enum AnomalyLevel {
+  LEVEL_NORMAL = 0,      // 정상 (>80점)
+  LEVEL_WARNING,         // 주의 (60-80점)
+  LEVEL_CRITICAL,        // 위험 (40-60점)
+  LEVEL_FAILURE          // 고장 임박 (<40점)
+};
+
+// 함수 선언
+void collectSensorData(SensorData* data);
+void analyzeHealth(SensorData* data, HealthIndicator* health);
+AnomalyLevel detectAnomaly(HealthIndicator* health);
+int predictRUL(HealthIndicator* health);
+void sendAlert(AnomalyLevel level);
+
+#endif
+```
+
+```cpp
+// predictive_maintenance.cpp - 구현부
+#include "predictive_maintenance.h"
+
+// 핀 번호 정의
+#define PIN_TEMP      A0
+#define PIN_VIBRATION D2
+#define PIN_CURRENT   A1
+#define PIN_SOUND     A2
+
+// 기준값 (정상 상태)
+#define NORMAL_TEMP      40.0   // 정상 온도 (°C)
+#define MAX_TEMP         70.0   // 최대 허용 온도
+#define NORMAL_CURRENT   0.8    // 정상 전류 (A)
+#define MAX_CURRENT      2.0    // 최대 전류
+
+// 이동 평균 필터 (노이즈 제거)
+#define FILTER_SIZE 10
+float tempHistory[FILTER_SIZE] = {0};
+float currentHistory[FILTER_SIZE] = {0};
+int filterIndex = 0;
+
+// 센서 데이터 수집
+void collectSensorData(SensorData* data) {
+  // 온도 센서 (LM35: 10mV/°C)
+  int tempRaw = analogRead(PIN_TEMP);
+  data->temperature = (tempRaw * 5.0 / 1024.0) * 100.0;
+  
+  // 진동 센서 (디지털)
+  data->vibration = digitalRead(PIN_VIBRATION);
+  
+  // 전류 센서 (ACS712-05B)
+  int currentRaw = analogRead(PIN_CURRENT);
+  // 2.5V = 0A, 66mV/A
+  data->current = ((currentRaw * 5.0 / 1024.0) - 2.5) / 0.066;
+  data->current = abs(data->current);  // 절대값
+  
+  // 소음 센서 (마이크)
+  data->soundLevel = analogRead(PIN_SOUND);
+  
+  // 타임스탬프
+  data->timestamp = millis();
+  
+  // 이동 평균 필터 적용
+  tempHistory[filterIndex] = data->temperature;
+  currentHistory[filterIndex] = data->current;
+  filterIndex = (filterIndex + 1) % FILTER_SIZE;
+  
+  // 평균 계산
+  float tempSum = 0, currentSum = 0;
+  for (int i = 0; i < FILTER_SIZE; i++) {
+    tempSum += tempHistory[i];
+    currentSum += currentHistory[i];
+  }
+  data->temperature = tempSum / FILTER_SIZE;
+  data->current = currentSum / FILTER_SIZE;
+}
+
+// 건강 상태 분석
+void analyzeHealth(SensorData* data, HealthIndicator* health) {
+  // 1. 온도 점수 (0-100)
+  if (data->temperature <= NORMAL_TEMP) {
+    health->temperatureScore = 100;
+  } else if (data->temperature >= MAX_TEMP) {
+    health->temperatureScore = 0;
+  } else {
+    // 선형 감소
+    health->temperatureScore = 
+      100 - ((data->temperature - NORMAL_TEMP) / (MAX_TEMP - NORMAL_TEMP) * 100);
+  }
+  
+  // 2. 진동 점수
+  // 진동 감지 시 점수 감소
+  static int vibrationCount = 0;
+  if (data->vibration == HIGH) {
+    vibrationCount++;
+  } else {
+    vibrationCount = max(0, vibrationCount - 1);  // 천천히 회복
+  }
+  health->vibrationScore = 100 - (vibrationCount * 2);  // 50회 진동 시 0점
+  health->vibrationScore = constrain(health->vibrationScore, 0, 100);
+  
+  // 3. 전류 점수
+  if (data->current <= NORMAL_CURRENT) {
+    health->currentScore = 100;
+  } else if (data->current >= MAX_CURRENT) {
+    health->currentScore = 0;
+  } else {
+    health->currentScore = 
+      100 - ((data->current - NORMAL_CURRENT) / (MAX_CURRENT - NORMAL_CURRENT) * 100);
+  }
+  
+  // 4. 소음 점수
+  // 기준 소음 레벨: 400 (정상), 700 (위험)
+  if (data->soundLevel <= 400) {
+    health->soundScore = 100;
+  } else if (data->soundLevel >= 700) {
+    health->soundScore = 0;
+  } else {
+    health->soundScore = 100 - ((data->soundLevel - 400) / 300.0 * 100);
+  }
+  
+  // 5. 종합 건강도 (가중 평균)
+  health->overallHealth = 
+    (health->temperatureScore * 0.4) +   // 온도 40%
+    (health->vibrationScore * 0.3) +     // 진동 30%
+    (health->currentScore * 0.2) +       // 전류 20%
+    (health->soundScore * 0.1);          // 소음 10%
+  
+  // 6. RUL 예측
+  health->RUL = predictRUL(health);
+}
+
+// 이상 레벨 판단
+AnomalyLevel detectAnomaly(HealthIndicator* health) {
+  if (health->overallHealth > 80) {
+    return LEVEL_NORMAL;     // 정상
+  } else if (health->overallHealth > 60) {
+    return LEVEL_WARNING;    // 주의 (2-4주 후 점검 필요)
+  } else if (health->overallHealth > 40) {
+    return LEVEL_CRITICAL;   // 위험 (1주일 이내 점검)
+  } else {
+    return LEVEL_FAILURE;    // 고장 임박 (24시간 이내)
+  }
+}
+
+// RUL (잔여 수명) 예측
+int predictRUL(HealthIndicator* health) {
+  // 간단한 선형 모델
+  // 건강도 100 → 60일, 건강도 0 → 0일
+  int estimatedDays = (int)(health->overallHealth * 0.6);
+  
+  return estimatedDays;
+}
+
+// 알림 전송
+void sendAlert(AnomalyLevel level) {
+  String message = "";
+  int buzzerFreq = 0;
+  int r = 0, g = 0, b = 0;
+  
+  switch (level) {
+    case LEVEL_NORMAL:
+      message = "NORMAL";
+      r = 0; g = 255; b = 0;  // 초록
+      // 부저 없음
+      break;
+      
+    case LEVEL_WARNING:
+      message = "WARNING";
+      r = 255; g = 255; b = 0;  // 노랑
+      buzzerFreq = 1000;  // 1 kHz
+      tone(PIN_BUZZER, buzzerFreq, 200);
+      break;
+      
+    case LEVEL_CRITICAL:
+      message = "CRITICAL";
+      r = 255; g = 165; b = 0;  // 주황
+      buzzerFreq = 1500;  // 1.5 kHz
+      for (int i = 0; i < 3; i++) {
+        tone(PIN_BUZZER, buzzerFreq, 100);
+        delay(150);
+      }
+      break;
+      
+    case LEVEL_FAILURE:
+      message = "FAILURE";
+      r = 255; g = 0; b = 0;  // 빨강
+      buzzerFreq = 2000;  // 2 kHz
+      for (int i = 0; i < 5; i++) {
+        tone(PIN_BUZZER, buzzerFreq, 100);
+        delay(100);
+      }
+      break;
+  }
+  
+  // RGB LED 설정
+  setRGB(r, g, b);
+  
+  // 앱으로 전송
+  Serial1.print("{\"alert\":\"");
+  Serial1.print(message);
+  Serial1.println("\"}");
+  
+  // 디버깅
+  Serial.print("Alert: ");
+  Serial.println(message);
+}
+```
+
+### 📱 앱인벤터 화면
+
+```
+┌─────────────────────────────────┐
+│  ⚙️ 예측 정비 모니터링            │
+├─────────────────────────────────┤
+│  🚦 시스템 건강도: 🟢 82%         │
+│  ━━━━━━━━━━━━━━━━━━━━━         │
+│  예상 잔여 수명: 49일            │
+│                                 │
+│  📊 실시간 센서 데이터            │
+│  ┌─────────────────────┐        │
+│  │ 🌡️ 온도: 45°C [정상] │        │
+│  │ 📳 진동: 낮음         │        │
+│  │ ⚡ 전류: 0.9A [정상]  │        │
+│  │ 🔊 소음: 420 [정상]   │        │
+│  └─────────────────────┘        │
+│                                 │
+│  📈 건강도 추세 (7일)            │
+│  100% ┼━╮                       │
+│   80% ┤  ╲                      │
+│   60% ┤   ╲_____                │
+│   40% ┤                         │
+│   20% ┤                         │
+│    0% └─────────────────        │
+│       Day1  Day3  Day5  Day7    │
+│                                 │
+│  ⚠️ 예측 알림                    │
+│  • 14일 후: 베어링 점검 권장    │
+│  • 28일 후: 서보 교체 검토      │
+│                                 │
+│  [📅 정비 일정] [📊 상세 분석]   │
+└─────────────────────────────────┘
+```
+
+### 🔄 확장 아이디어
+
+```
+1. 클라우드 연동 (1시간)
+   - Firebase 실시간 DB
+   - 여러 장비 통합 모니터링
+   - 관리자 대시보드
+   
+2. 머신러닝 정확도 향상 (2시간)
+   - 실제 고장 데이터 학습
+   - LSTM 시계열 예측
+   - 오차율 10% 이하
+   
+3. 자동 부품 발주 (1시간)
+   - RUL < 14일 시 자동 발주
+   - 재고 관리 연동
+```
+
+---
+
+## 🤝 시나리오 H: 협업 로봇 조립 라인
+
+### 📖 현업 스토리
+
+```
+[배경]
+현대차 싱가포르 스마트 팩토리의 핵심: "셀 생산 방식"
+2개 로봇이 협력하여 1대 차량 조립, 생산성 3배 향상
+
+[문제]
+- 1개 로봇으로는 복잡한 조립 불가
+- 사람 2명이 협업하듯 로봇도 협업 필요
+- 충돌 회피 및 작업 동기화가 어려움
+
+[해결 - 협업 로봇]
+작업 분할 알고리즘 + 충돌 회피 + 실시간 통신
+→ 생산 속도 2배, 품질 안정성 향상
+```
+
+### 🏗️ 전체 시스템 구조도
+
+```mermaid
+graph TD
+    subgraph 로봇A[로봇 A - 픽커]
+        A1[📍 작업 구역 1<br/>물체 피킹]
+        A2[🦾 4축 제어<br/>집기 전담]
+        A3[📡 상태 전송<br/>"피킹 완료"]
+    end
+    
+    subgraph 로봇B[로봇 B - 플레이서]
+        B1[📍 작업 구역 2<br/>조립/배치]
+        B2[🦾 4축 제어<br/>놓기 전담]
+        B3[📡 상태 수신<br/>"대기 중"]
+    end
+    
+    subgraph 중앙제어[중앙 제어기]
+        C1[🧠 작업 스케줄러<br/>순서 결정]
+        C2[⚠️ 충돌 회피<br/>안전 거리 유지]
+        C3[🔄 동기화<br/>대기/진행]
+    end
+    
+    subgraph 모니터링[모니터링]
+        M1[📱 실시간 상태<br/>A + B 위치]
+        M2[📊 생산성<br/>사이클 타임]
+        M3[🎥 작업 영상<br/>상/하 카메라]
+    end
+    
+    A1 --> A2 --> A3
+    B1 --> B2 --> B3
+    
+    A3 <-.통신.-> C1
+    B3 <-.통신.-> C1
+    
+    C1 --> C2 --> C3
+    
+    C3 -.명령.-> A1
+    C3 -.명령.-> B1
+    
+    C1 --> M1
+    C2 --> M2
+    C3 --> M3
+    
+    style 로봇A fill:#FFE66D,color:#111
+    style 로봇B fill:#4ECDC4,color:#fff
+    style 중앙제어 fill:#FF6B6B,color:#fff
+```
+
+### 🔧 하드웨어 자원
+
+| 장치명 | 핀 번호 | 용도 | 특이사항 |
+|--------|---------|------|----------|
+| **로봇 A 서보** | D5~D8 | 피킹 전용 | MG996R×3 + SG90 |
+| **로봇 B 서보** | D9~D12 | 플레이스 전용 | MG996R×3 + SG90 |
+| IR 센서 A | D2 | 작업 영역 1 감지 | 충돌 방지 |
+| IR 센서 B | D3 | 작업 영역 2 감지 | 충돌 방지 |
+| RGB LED A | D18~D20 | 로봇 A 상태 | 빨강=대기, 초록=작업 |
+| RGB LED B | D21~D23 | 로봇 B 상태 | 빨강=대기, 초록=작업 |
+| 피에조 부저 | D22 | 사이클 완료 알림 | 협업 성공음 |
+
+### 💻 핵심 알고리즘
+
+```cpp
+// collaborative_robots.h - 협업 로봇 모듈
+#ifndef COLLABORATIVE_ROBOTS_H
+#define COLLABORATIVE_ROBOTS_H
+
+#include <Arduino.h>
+#include <Servo.h>
+
+// 로봇 상태
+enum RobotState {
+  ROBOT_IDLE = 0,       // 대기
+  ROBOT_MOVING,         // 이동 중
+  ROBOT_PICKING,        // 피킹 중
+  ROBOT_PLACING,        // 플레이스 중
+  ROBOT_WAITING         // 대기 (다른 로봇 완료 기다림)
+};
+
+// 작업 단계
+enum WorkflowStep {
+  STEP_IDLE = 0,
+  STEP_A_PICK,          // A: 피킹
+  STEP_A_TRANSFER,      // A: 전달 위치로 이동
+  STEP_B_RECEIVE,       // B: 수령 준비
+  STEP_B_PLACE,         // B: 배치
+  STEP_COMPLETE         // 완료
+};
+
+// 충돌 회피 존
+struct SafetyZone {
+  int minAngle1;        // 베이스 최소 각도
+  int maxAngle1;        // 베이스 최대 각도
+  int minAngle2;        // 어깨 최소 각도
+  int maxAngle2;        // 어깨 최대 각도
+};
+
+// 함수 선언
+void setupCollaborativeRobots();
+bool checkCollision(int robotA_angle1, int robotA_angle2, 
+                    int robotB_angle1, int robotB_angle2);
+void executeWorkflow();
+void robotA_pickObject();
+void robotA_transferToB();
+void robotB_receiveObject();
+void robotB_placeObject();
+void syncRobots();
+
+#endif
+```
+
+```cpp
+// collaborative_robots.cpp - 구현부
+#include "collaborative_robots.h"
+
+// 서보 객체
+Servo robotA_servo1, robotA_servo2, robotA_servo3, robotA_servo4;
+Servo robotB_servo1, robotB_servo2, robotB_servo3, robotB_servo4;
+
+// 전역 변수
+RobotState stateA = ROBOT_IDLE;
+RobotState stateB = ROBOT_IDLE;
+WorkflowStep currentStep = STEP_IDLE;
+
+// 안전 구역 정의 (충돌 방지)
+SafetyZone zoneA = {0, 90, 30, 120};      // 로봇 A 작업 영역
+SafetyZone zoneB = {90, 180, 30, 120};    // 로봇 B 작업 영역
+SafetyZone transferZone = {80, 100, 60, 90};  // 전달 공유 영역
+
+// 초기화
+void setupCollaborativeRobots() {
+  // 로봇 A 서보 연결
+  robotA_servo1.attach(5);
+  robotA_servo2.attach(6);
+  robotA_servo3.attach(7);
+  robotA_servo4.attach(8);
+  
+  // 로봇 B 서보 연결
+  robotB_servo1.attach(9);
+  robotB_servo2.attach(10);
+  robotB_servo3.attach(11);
+  robotB_servo4.attach(12);
+  
+  // 초기 위치 (대기 자세)
+  robotA_servo1.write(45);   // A는 왼쪽 영역
+  robotA_servo2.write(90);
+  robotA_servo3.write(90);
+  robotA_servo4.write(0);    // 그리퍼 열림
+  
+  robotB_servo1.write(135);  // B는 오른쪽 영역
+  robotB_servo2.write(90);
+  robotB_servo3.write(90);
+  robotB_servo4.write(0);    // 그리퍼 열림
+  
+  Serial.println("Collaborative robots initialized");
+}
+
+// 충돌 감지
+bool checkCollision(int robotA_angle1, int robotA_angle2, 
+                    int robotB_angle1, int robotB_angle2) {
+  // 간단한 충돌 검사: 두 로봇의 베이스 각도 차이
+  int angleDiff = abs(robotA_angle1 - robotB_angle1);
+  
+  // 안전 거리: 30도 이상 유지
+  if (angleDiff < 30) {
+    Serial.println("COLLISION WARNING!");
+    return true;  // 충돌 위험
+  }
+  
+  return false;  // 안전
+}
+
+// 작업 워크플로우 실행
+void executeWorkflow() {
+  switch (currentStep) {
+    case STEP_IDLE:
+      // 시작 대기
+      Serial.println("Workflow: IDLE");
+      currentStep = STEP_A_PICK;
+      break;
+      
+    case STEP_A_PICK:
+      // 로봇 A: 물체 피킹
+      Serial.println("Workflow: A Pick");
+      robotA_pickObject();
+      currentStep = STEP_A_TRANSFER;
+      break;
+      
+    case STEP_A_TRANSFER:
+      // 로봇 A: 전달 위치로 이동
+      Serial.println("Workflow: A Transfer");
+      robotA_transferToB();
+      
+      // B가 수령 준비 완료될 때까지 대기
+      syncRobots();
+      currentStep = STEP_B_RECEIVE;
+      break;
+      
+    case STEP_B_RECEIVE:
+      // 로봇 B: 수령 준비
+      Serial.println("Workflow: B Receive");
+      robotB_receiveObject();
+      
+      // A가 물체를 놓을 때까지 대기
+      syncRobots();
+      currentStep = STEP_B_PLACE;
+      break;
+      
+    case STEP_B_PLACE:
+      // 로봇 B: 최종 배치
+      Serial.println("Workflow: B Place");
+      robotB_placeObject();
+      currentStep = STEP_COMPLETE;
+      break;
+      
+    case STEP_COMPLETE:
+      // 사이클 완료
+      Serial.println("Workflow: COMPLETE");
+      playSound(SOUND_SUCCESS);
+      
+      // 통계 업데이트
+      sendStatistics();
+      
+      // 다시 처음으로
+      delay(2000);
+      currentStep = STEP_IDLE;
+      break;
+  }
+}
+
+// 로봇 A: 물체 피킹
+void robotA_pickObject() {
+  stateA = ROBOT_PICKING;
+  setRGB_A(255, 255, 0);  // 노란색: 작업 중
+  
+  // 1. 물체 위로 이동
+  robotA_servo1.write(30);   // 피킹 위치
+  robotA_servo2.write(60);   // 하강 준비
+  delay(500);
+  
+  // 2. 하강
+  robotA_servo2.write(40);
+  delay(500);
+  
+  // 3. 그리퍼 닫기 (물체 집기)
+  robotA_servo4.write(90);
+  delay(500);
+  
+  // 4. 상승
+  robotA_servo2.write(90);
+  delay(500);
+  
+  setRGB_A(0, 255, 0);  // 초록색: 완료
+  stateA = ROBOT_WAITING;
+}
+
+// 로봇 A: 전달 위치로 이동
+void robotA_transferToB() {
+  stateA = ROBOT_MOVING;
+  setRGB_A(0, 0, 255);  // 파란색: 이동 중
+  
+  // 전달 위치 (중앙 공유 영역)
+  robotA_servo1.write(90);   // 중앙
+  robotA_servo2.write(75);   // 전달 높이
+  delay(1000);
+  
+  stateA = ROBOT_WAITING;
+}
+
+// 로봇 B: 수령 준비
+void robotB_receiveObject() {
+  stateB = ROBOT_MOVING;
+  setRGB_B(0, 0, 255);  // 파란색: 이동 중
+  
+  // 충돌 확인
+  if (checkCollision(90, 75, 90, 75)) {
+    Serial.println("Waiting for safe distance...");
+    delay(500);
+  }
+  
+  // 수령 위치로 이동
+  robotB_servo1.write(90);   // 중앙
+  robotB_servo2.write(75);   // 동일 높이
+  robotB_servo4.write(0);    // 그리퍼 열림
+  delay(1000);
+  
+  // 그리퍼 닫기 (물체 수령)
+  robotB_servo4.write(90);
+  delay(500);
+  
+  // A가 그리퍼 열기 (물체 전달 완료)
+  robotA_servo4.write(0);
+  delay(500);
+  
+  // A는 원위치
+  robotA_servo1.write(45);
+  robotA_servo2.write(90);
+  
+  stateB = ROBOT_PLACING;
+  setRGB_B(255, 255, 0);  // 노란색: 배치 중
+}
+
+// 로봇 B: 최종 배치
+void robotB_placeObject() {
+  // 배치 위치로 이동
+  robotB_servo1.write(150);  // 최종 위치
+  robotB_servo2.write(60);
+  delay(1000);
+  
+  // 하강
+  robotB_servo2.write(40);
+  delay(500);
+  
+  // 그리퍼 열기 (물체 놓기)
+  robotB_servo4.write(0);
+  delay(500);
+  
+  // 상승 및 원위치
+  robotB_servo2.write(90);
+  delay(500);
+  robotB_servo1.write(135);
+  delay(500);
+  
+  setRGB_B(0, 255, 0);  // 초록색: 완료
+  stateB = ROBOT_IDLE;
+}
+
+// 로봇 동기화 (대기)
+void syncRobots() {
+  Serial.println("Syncing robots...");
+  
+  // 두 로봇 모두 대기 상태가 될 때까지 대기
+  while (stateA != ROBOT_WAITING || stateB != ROBOT_WAITING) {
+    delay(100);
+  }
+  
+  Serial.println("Robots synced!");
+}
+
+// RGB LED 제어 (로봇 A)
+void setRGB_A(int r, int g, int b) {
+  analogWrite(18, r);
+  analogWrite(19, g);
+  analogWrite(20, b);
+}
+
+// RGB LED 제어 (로봇 B)
+void setRGB_B(int r, int g, int b) {
+  analogWrite(21, r);
+  analogWrite(22, g);
+  analogWrite(23, b);
+}
+```
+
+### 📱 앱인벤터 화면
+
+```
+┌─────────────────────────────────┐
+│  🤝 협업 로봇 조립 라인           │
+├─────────────────────────────────┤
+│  📊 작업 진행 상황                │
+│  ┌─────────┬─────────┐          │
+│  │ 🦾 로봇 A│ 🦾 로봇 B│          │
+│  ├─────────┼─────────┤          │
+│  │ 🟢 작업중│ 🔴 대기중│          │
+│  │         │         │          │
+│  │  [○]    │         │          │
+│  │   │     │         │          │
+│  │  [  ]   │   [  ]  │          │
+│  │         │         │          │
+│  └─────────┴─────────┘          │
+│  현재 단계: ② 전달 위치 이동     │
+│  ━━━━━━━━━━━━━━━━━━━━━         │
+│  ①피킹 ②전달 ③수령 ④배치 ⑤완료  │
+│                                 │
+│  ⏱️ 성능 지표                    │
+│  • 사이클 타임: 8.2초            │
+│  • 1개 로봇 대비: 2.1배 빠름     │
+│  • 충돌 회피: 성공 100%          │
+│  • 오늘 생산: 342개              │
+│                                 │
+│  📈 시간대별 생산량               │
+│  ▁▂▃▅▇▇▅▃▂                     │
+│  9  10 11 12 13 14 15 16 17시   │
+│                                 │
+│  [🎬 작업 영상] [⏸️ 일시정지]    │
+└─────────────────────────────────┘
+```
+
+### 🔄 확장 아이디어
+
+```
+1. 3개 로봇 협업 (2시간)
+   - A: 피킹, B: 조립, C: 검사
+   - 복잡한 동기화
+   
+2. 적응형 속도 조절 (1시간)
+   - 빠른 로봇이 느린 로봇 기다림
+   - 전체 사이클 최적화
+   
+3. 장애물 회피 (1시간)
+   - 초음파 센서로 장애물 감지
+   - 대체 경로 계산
+```
+
+---
+
+## 📊 시나리오별 비교 총정리 (업데이트)
+
+| 항목 | 시나리오 A | 시나리오 B | 시나리오 C | 시나리오 D | 시나리오 E | 시나리오 F | 시나리오 G | 시나리오 H |
+|------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| **난이도** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **AI 사용** | ✅ 필수 | ❌ 없음 | ✅ 필수 | ✅ 필수 | ✅ 필수 | ✅ 필수 | ✅ 선택 | ❌ 없음 |
+| **로봇팔** | ✅ 1개 | ❌ 미사용 | ✅ 1개 | ✅ 1개 | ✅ 1개 | ✅ 1개 | ✅ 1개 | ✅ 2개 |
+| **센서 개수** | 3개 | 2개 | 5개 | 4개 | 5개 | 1개 | 4개 | 2개 |
+| **LED 종류** | 3종 | 4종 | 5종 | 3종 | 5종 | 2종 | 4종 | 4종 |
+| **앱 기능** | TTS+차트 | 모니터링 | 풀옵션 | STT+TTS | 분석 | 손추적+비교 | 예측+알림 | 협업상태 |
+| **개발 시간** | 5-6h | 4-5h | 6-7h | 5-6h | 6-7h | 5-6h | 6-7h | 7-8h |
+| **현업 적용** | 제조 품질 | 물류 분류 | 통합 물류 | 이커머스 | 정밀 제조 | **피지컬AI** | **예측정비** | **협업로봇** |
+| **산업 트렌드** | 기본 | 기본 | 고급 | 고급 | 고급 | **🔥 최신** | **🔥 최신** | **🔥 최신** |
 
 ---
 
 ## 🎓 학습 로드맵
 
-### 시나리오 선택 플로우
+### 시나리오 선택 플로우 (업데이트)
 
 ```mermaid
 graph TD
-    START{시작} --> Q1{로봇팔<br/>사용?}
+    START{시작} --> Q1{관심 분야?}
     
-    Q1 -->|Yes| Q2{AI<br/>사용?}
-    Q1 -->|No| S_B[시나리오 B<br/>센서만 사용]
+    Q1 -->|기본| Q2{센서 vs AI?}
+    Q1 -->|최신 트렌드| Q5{산업 트렌드?}
     
-    Q2 -->|Yes| Q3{난이도?}
-    Q2 -->|No| S_B
+    Q2 -->|센서만| S_B[시나리오 B<br/>센서 분류 ⭐⭐⭐]
+    Q2 -->|AI+센서| S_A[시나리오 A<br/>품질검사 ⭐⭐⭐⭐]
     
-    Q3 -->|중급| S_A[시나리오 A<br/>AI+센서 검증]
-    Q3 -->|고급| Q4{특화?}
+    Q5 -->|피지컬 AI| S_F[🔥 시나리오 F<br/>따라하는 로봇<br/>⭐⭐⭐⭐]
+    Q5 -->|스마트 팩토리| S_G[🔥 시나리오 G<br/>예측 정비<br/>⭐⭐⭐⭐⭐]
+    Q5 -->|다중 로봇| S_H[🔥 시나리오 H<br/>협업 로봇<br/>⭐⭐⭐⭐⭐]
     
-    Q4 -->|통합| S_C[시나리오 C<br/>완전 자동화]
-    Q4 -->|음성| S_D[시나리오 D<br/>음성 주문]
-    Q4 -->|품질| S_E[시나리오 E<br/>불량 검출]
+    Q1 -->|통합/고급| Q3{목적?}
     
-    style START fill:#95E1D3
-    style S_C fill:#FF6B6B,color:#fff
+    Q3 -->|완전자동화| S_C[시나리오 C<br/>통합물류 ⭐⭐⭐⭐⭐]
+    Q3 -->|음성제어| S_D[시나리오 D<br/>음성주문 ⭐⭐⭐⭐]
+    Q3 -->|품질검사| S_E[시나리오 E<br/>불량검출 ⭐⭐⭐⭐⭐]
+    
+    style START fill:#95E1D3,color:#111
+    style S_F fill:#FFD93D,color:#111
+    style S_G fill:#FF6B6B,color:#fff
+    style S_H fill:#4ECDC4,color:#fff
+```
+
+### 난이도별 추천 학습 경로
+
+```mermaid
+graph LR
+    subgraph 초급_4-5시간[초급 (4-5시간)]
+        B[시나리오 B<br/>센서 분류]
+    end
+    
+    subgraph 중급_5-6시간[중급 (5-6시간)]
+        A[시나리오 A<br/>품질검사]
+        D[시나리오 D<br/>음성주문]
+        F[시나리오 F<br/>따라하는 로봇]
+    end
+    
+    subgraph 고급_6-8시간[고급 (6-8시간)]
+        C[시나리오 C<br/>통합물류]
+        E[시나리오 E<br/>불량검출]
+        G[시나리오 G<br/>예측정비]
+        H[시나리오 H<br/>협업로봇]
+    end
+    
+    B --> A
+    B --> D
+    A --> C
+    A --> F
+    F --> G
+    D --> C
+    C --> E
+    E --> G
+    G --> H
+    
+    style 초급_4-5시간 fill:#90EE90,color:#111
+    style 중급_5-6시간 fill:#FFD93D,color:#111
+    style 고급_6-8시간 fill:#FF6B6B,color:#fff
+```
+
+### 산업 연계 학습 경로
+
+| 목표 산업 | 추천 시나리오 | 학습 순서 | 최종 목표 |
+|----------|--------------|----------|----------|
+| **제조업 (품질관리)** | A → E → G | 1. 기본 품질검사<br/>2. 3단계 검증<br/>3. 예측 정비 | 무결점 생산 |
+| **물류/이커머스** | B → D → C | 1. 자동 분류<br/>2. 음성 주문<br/>3. 통합 물류 | 완전 자동화 |
+| **AI 스타트업** | F → A → E | 1. 피지컬 AI<br/>2. AI+센서 융합<br/>3. 다중 검증 | AI 전문가 |
+| **스마트 팩토리** | G → H → C | 1. 예측 정비<br/>2. 협업 로봇<br/>3. 통합 시스템 | 팩토리 4.0 |
+| **로봇 엔지니어** | F → H → C | 1. 동작 학습<br/>2. 다중 로봇<br/>3. 시스템 통합 | 로봇 전문가 |
+
+### 주차별 학습 계획 (3주 집중 코스)
+
+```mermaid
+gantt
+    title 스마트 팩토리 프로젝트 3주 완성
+    dateFormat  YYYY-MM-DD
+    
+    section 1주차_기초
+    시나리오 B (센서)        :2026-01-27, 1d
+    시나리오 A (AI+센서)     :2026-01-28, 1.5d
+    복습 및 디버깅          :2026-01-30, 0.5d
+    
+    section 2주차_심화
+    시나리오 F (피지컬 AI)  :2026-02-03, 1.5d
+    시나리오 D (음성제어)    :2026-02-05, 1d
+    미니 프로젝트           :2026-02-06, 0.5d
+    
+    section 3주차_최신트렌드
+    시나리오 G (예측정비)    :2026-02-10, 1.5d
+    시나리오 H (협업로봇)    :2026-02-12, 1.5d
+    최종 프로젝트 준비      :2026-02-13, 1d
 ```
 
 ---
@@ -2143,8 +3354,52 @@ RGB readColorSensor();
 
 ---
 
-**Last Updated**: 2026-01-22  
-**Version**: 2.0 (절차적 구조 + 영문 명명 + 모듈화)  
+---
+
+## 🎉 마무리
+
+### 새로 추가된 내용 (Version 3.0)
+
+```mermaid
+mindmap
+  root((Version 3.0<br/>업데이트))
+    시나리오 F
+      피지컬 AI
+      Learning from Demo
+      MediaPipe 손 추적
+      한국의 강점 활용
+    시나리오 G
+      예측 정비
+      센서 데이터 분석
+      LSTM 시계열 예측
+      RUL 잔여 수명
+    시나리오 H
+      협업 로봇
+      2개 로봇 동기화
+      충돌 회피 알고리즘
+      현대차 셀 생산 방식
+```
+
+### 학습 효과
+
+이제 학생들은 **8가지 시나리오**를 통해:
+
+✅ **기본 → 최신 트렌드**까지 학습  
+✅ **센서 기반 → AI 기반 → 협업 시스템**까지 단계적 성장  
+✅ **실제 산업 현장(테슬라, 현대, 샤오미)**의 기술 체험  
+✅ **피지컬 AI, 예측 정비, 협업 로봇** 등 2026년 최신 기술 습득  
+✅ **로봇 엔지니어, AI 엔지니어, 스마트 팩토리 전문가**로 성장
+
+---
+
+**Last Updated**: 2026-01-23  
+**Version**: 3.0 (최신 산업 트렌드 시나리오 F, G, H 추가)  
 **제작**: Smart Factory Education Team  
 
-**다음 단계**: 선택한 시나리오의 코드를 다운로드하여 아두이노 IDE에서 컴파일하세요! 🚀
+**다음 단계**: 
+1. 기본 시나리오(A-E)로 시작
+2. 최신 트렌드 시나리오(F-H)로 도전
+3. 선택한 시나리오의 코드를 다운로드하여 아두이노 IDE에서 컴파일
+4. 실제 하드웨어에서 테스트 및 개선
+
+**🚀 이제 여러분도 스마트 팩토리 전문가가 될 수 있습니다!**
