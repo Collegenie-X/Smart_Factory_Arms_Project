@@ -26,10 +26,10 @@
 #define PIN_DC_DIRECTION 13  // DC모터(레일) 방향을 정하는 핀(현재 B모터 사용)
 #define PIN_DC_SPEED 11      // DC모터(레일) 속도를 정하는 핀(현재 B모터 사용)
 #define PIN_SERVO 9          // 서보모터 연결 핀
-#define PIN_LED 5            // LED 연결 핀
+#define PIN_LED 6           // LED 연결 핀
 #define PIN_IR A0            // 적외선 IR센서 연결 핀
 
-#define POS_RED 35   // 빨간 색 제품을 분류할 서보모터의 각도
+#define POS_RED 25   // 빨간 색 제품을 분류할 서보모터의 각도
 #define POS_GREEN 57  // 초록 색 제품을 분류할 서보모터의 각도
 #define POS_BLUE 2    // 파란 색 제품을 분류할 서보모터의 각도
 #define NUM_PIXELS 3  // 네오픽셀의 픽셀 수: 3
@@ -59,6 +59,7 @@ void setup() {
   /* 컬러 센서 설정 */
   TCS.begin();  // 컬러 센서 작동 시작
 
+
   /* LED 모듈 설정 */
   pixels.begin();             // LED 모듈 작동 시작
   pixels.setBrightness(255);  // 밝기(0~255) 설정. 최대 밝기로 출력
@@ -67,12 +68,12 @@ void setup() {
 void loop() {
   /* 제품 적재여부 확인 */
   if (digitalRead(PIN_IR) == HIGH) {                          // 적외선 센서는 물건 감지 시 LOW값을 전달. HIGH라는 것은 감지되지 않았음
-    return;                                                 // loop에 대한 return문장은 그 즉시 loop문을 종료하고, 처음부터 loop을 시작하게 함
+     return;                                                 // loop에 대한 return문장은 그 즉시 loop문을 종료하고, 처음부터 loop을 시작하게 함
   }
   analogWrite(PIN_DC_SPEED, 0);                               // 적외선 센서에서 제품을 감지하여 일시 정지
   toneDetected();                                             // 감지되었을 때 나오는 소리를 부저에 출력
   delay(2000);                                                // 2초간 정지
-  analogWrite(PIN_DC_SPEED, railSpeed - 20);                  // 레일을 컬러센서까지 움직이기 시작
+  analogWrite(PIN_DC_SPEED, railSpeed);                  // 레일을 컬러센서까지 움직이기 시작
 
   do {                                                        // do-while 반복문을 사용하면 최초 1회는 반드시 실행됨
     TCS.getRawData(&red, &green, &blue, &clear);            // 색상 감지 센서에서 측정 값 받아오기
@@ -118,7 +119,7 @@ void loop() {
   pixels.show();  // 입력한 색상 값을 LED 모듈에 출력
   delay(1500);                                                                       // 측정 결과 표기 후 1.5초 간 레일 대기
   servo.detach();                                                                    // 서보모터와 아두이노 연결 해제
-  analogWrite(PIN_DC_SPEED, railSpeed-10);                                              // 레일 작동 시작
+  analogWrite(PIN_DC_SPEED,railSpeed);                                              // 레일 작동 시작
   delay(1000);                                                                       // 다음 제품은 1초 뒤부터 인식 가능
 }
 
