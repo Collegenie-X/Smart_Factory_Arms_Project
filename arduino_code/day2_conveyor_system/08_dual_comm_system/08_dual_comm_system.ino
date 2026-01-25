@@ -14,8 +14,9 @@
  * - start_ : 자동화 시작
  * - stop_  : 자동화 중지
  * - init_  : 카운터 초기화
+ * - count_ : 카운터 조회 (빨강,초록,파랑)
  * 
- * Bluetooth: TX=2, RX=2
+ * Bluetooth: TX=2, RX=3
  */
 
 /* ===== 라이브러리 ===== */
@@ -33,7 +34,7 @@
 #define PIN_IR_SENSOR       A0    // 적외선 센서
 #define PIN_BUZZER          4     // 부저
 #define PIN_BT_TX           2     // Bluetooth TX
-#define PIN_BT_RX           2     // Bluetooth RX
+#define PIN_BT_RX           3     // Bluetooth RX
 
 /* ===== 서보 각도 설정 ===== */
 #define ANGLE_RED           30    // 빨간색 제품
@@ -84,6 +85,25 @@ int serialCmdIndex = 0;
 char btCmdBuffer[CMD_BUFFER_SIZE];
 int btCmdIndex = 0;
 
+// 임시 버퍼 (메모리 재사용)
+char tempBuffer[50];
+
+/**
+ * Serial과 Bluetooth 둘 다 출력 (F() 매크로 사용)
+ */
+void printToBoth(const __FlashStringHelper* msg) {
+  Serial.println(msg);
+  bluetooth.println(msg);
+}
+
+/**
+ * Serial과 Bluetooth 둘 다 출력 (char* 사용)
+ */
+void printToBoth(const char* msg) {
+  Serial.println(msg);
+  bluetooth.println(msg);
+}
+
 /**
  * 초기화
  */
@@ -112,7 +132,7 @@ void setup() {
   
   // 컬러 센서 초기화
   if (!colorSensor.begin()) {
-    printToBoth("[오류] 컬러 센서를 찾을 수 없습니다!");
+    printToBoth(F("[오류] 컬러 센서를 찾을 수 없습니다!"));
     while (1) delay(1000);
   }
   
@@ -122,22 +142,30 @@ void setup() {
   led.show();
   
   // 시작 메시지
-  printToBoth("\n========================================");
-  printToBoth("  Serial + Bluetooth 제어 시스템");
-  printToBoth("========================================");
-  printToBoth("초기화 완료");
-  printToBoth("\n명령어:");
-  printToBoth("  start_ : 자동화 시작");
-  printToBoth("  stop_  : 자동화 중지");
-  printToBoth("  init_  : 카운터 초기화");
-  printToBoth("========================================");
-  printToBoth("명령 대기중...\n");
+  printToBoth(F("\n========================================"));
+  printToBoth(F("  Serial + Bluetooth 제어 시스템"));
+  printToBoth(F("========================================"));
+  printToBoth(F("초기화 완료"));
+  printToBoth(F("\n명령어:"));
+  printToBoth(F("  start_ : 자동화 시작"));
+  printToBoth(F("  stop_  : 자동화 중지"));
+  printToBoth(F("  init_  : 카운터 초기화"));
+  printToBoth(F("  count_ : 카운터 조회"));
+  printToBoth(F("========================================"));
+  printToBoth(F("명령 대기중...\n"));
   
-  // 시작 알림음
-  tone(PIN_BUZZER, 523, 100);
-  delay(150);
-  tone(PIN_BUZZER, 659, 100);
-  delay(150);
+  // 시작 알림 (부저 대신 LED 깜빡임)
+  for (int i = 0; i < NUM_PIXELS; i++) {
+    led.setPixelColor(i, led.Color(0, 255, 0));
+  }
+  led.show();
+  delay(200);
+  for (int i = 0; i < NUM_PIXELS; i++) {
+    led.setPixelColor(i, 0);
+  }
+  led.show();
+  
+  Serial.println(F("[READY]"));
 }
 
 /**
@@ -160,15 +188,17 @@ void loop() {
   
   // 2. 제품 감지됨!
   productCount++;
-  printToBoth("========================================");
-  printToBoth("제품 #" + String(productCount) + " 감지됨!");
-  printToBoth("========================================");
+  printToBoth(F("========================================"));
+  Serial.print(F("제품 #"));
+  Serial.print(productCount);
+  Serial.println(F(" 감지됨!"));
+  bluetooth.print(F("제품 #"));
+  bluetooth.print(productCount);
+  bluetooth.println(F(" 감지됨!"));
+  printToBoth(F("========================================"));
   
   // 3. 컨베이어 일시 정지
   analogWrite(PIN_MOTOR_SPEED, 0);
-  tone(PIN_BUZZER, 523, 50);
-  delay(100);
-  tone(PIN_BUZZER, 784, 50);
   delay(100);
   
   // DELAY_IR_DETECT 동안 명령 체크
@@ -201,21 +231,43 @@ void loop() {
   
   // 5. 컨베이어 정지 (색상 분석)
   analogWrite(PIN_MOTOR_SPEED, 0);
-  tone(PIN_BUZZER, 523, 50);
-  delay(100);
-  tone(PIN_BUZZER, 784, 50);
   delay(100);
   
   // 6. 색상 정보 출력
-  printToBoth("--- 색상 분석 결과 ---");
-  printToBoth("Raw -> R: " + String(rawR) + ", G: " + String(rawG) + ", B: " + String(rawB));
-  printToBoth("RGB -> R: " + String(r) + ", G: " + String(g) + ", B: " + String(b));
+  printToBoth(F("--- 색상 분석 결과 ---"));
+  
+  Serial.print(F("Raw -> R: "));
+  Serial.print(rawR);
+  Serial.print(F(", G: "));
+  Serial.print(rawG);
+  Serial.print(F(", B: "));
+  Serial.println(rawB);
+  
+  bluetooth.print(F("Raw -> R: "));
+  bluetooth.print(rawR);
+  bluetooth.print(F(", G: "));
+  bluetooth.print(rawG);
+  bluetooth.print(F(", B: "));
+  bluetooth.println(rawB);
+  
+  Serial.print(F("RGB -> R: "));
+  Serial.print(r);
+  Serial.print(F(", G: "));
+  Serial.print(g);
+  Serial.print(F(", B: "));
+  Serial.println(b);
+  
+  bluetooth.print(F("RGB -> R: "));
+  bluetooth.print(r);
+  bluetooth.print(F(", G: "));
+  bluetooth.print(g);
+  bluetooth.print(F(", B: "));
+  bluetooth.println(b);
   
   // 7. 색상 판별 및 분류
   int ledR = 0, ledG = 0, ledB = 0;
   int servoAngle = ANGLE_BLUE;
-  String colorName = "알 수 없음";
-  String countMsg = "";
+  const char* colorName = "알 수 없음";
   
   if (r > g && r > b) {
     // 빨간색
@@ -223,7 +275,11 @@ void loop() {
     servoAngle = ANGLE_RED;
     ledR = 255; ledG = 0; ledB = 0;
     redCount++;
-    countMsg = "red" + String(redCount) + "_";
+    
+    // 블루투스로 카운터 전송
+    bluetooth.print(F("red"));
+    bluetooth.print(redCount);
+    bluetooth.println(F("_"));
   } 
   else if (g > r && g > b) {
     // 초록색
@@ -231,7 +287,11 @@ void loop() {
     servoAngle = ANGLE_GREEN;
     ledR = 0; ledG = 255; ledB = 0;
     greenCount++;
-    countMsg = "green" + String(greenCount) + "_";
+    
+    // 블루투스로 카운터 전송
+    bluetooth.print(F("green"));
+    bluetooth.print(greenCount);
+    bluetooth.println(F("_"));
   } 
   else {
     // 파란색
@@ -239,11 +299,18 @@ void loop() {
     servoAngle = ANGLE_BLUE;
     ledR = 0; ledG = 0; ledB = 255;
     blueCount++;
-    countMsg = "blue" + String(blueCount) + "_";
+    
+    // 블루투스로 카운터 전송
+    bluetooth.print(F("blue"));
+    bluetooth.print(blueCount);
+    bluetooth.println(F("_"));
   }
   
-  printToBoth("판별 색상: " + colorName);
-  printToBoth("---------------------");
+  Serial.print(F("판별 색상: "));
+  Serial.println(colorName);
+  bluetooth.print(F("판별 색상: "));
+  bluetooth.println(colorName);
+  printToBoth(F("---------------------"));
   
   // 8. 서보 모터로 분류 방향 설정
   servo.attach(PIN_SERVO);
@@ -259,20 +326,35 @@ void loop() {
   }
   led.show();
   
-  // 10. 카운터 정보 전송
-  printToBoth("[카운터 전송] " + countMsg);
-  
   if (!delayWithCommandCheck(DELAY_COLOR_DETECT)) {
     servo.detach();
     return;
   }
   
-  // 11. 서보 분리 및 컨베이어 재가동
+  // 10. 서보 분리 및 컨베이어 재가동
   servo.detach();
   analogWrite(PIN_MOTOR_SPEED, MOTOR_SPEED);
   if (!delayWithCommandCheck(DELAY_NEXT_PRODUCT)) return;
   
-  printToBoth("제품 처리 완료\n");
+  printToBoth(F("제품 처리 완료\n"));
+}
+
+/**
+ * 시리얼 버퍼 비우기
+ */
+void clearSerialBuffer() {
+  while (Serial.available() > 0) {
+    Serial.read();
+  }
+}
+
+/**
+ * 블루투스 버퍼 비우기
+ */
+void clearBluetoothBuffer() {
+  while (bluetooth.available() > 0) {
+    bluetooth.read();
+  }
 }
 
 /**
@@ -291,14 +373,6 @@ bool delayWithCommandCheck(unsigned long ms) {
     delay(50);  // 50ms 간격으로 체크
   }
   return true;  // 정상 완료
-}
-
-/**
- * Serial과 Bluetooth 둘 다 출력
- */
-void printToBoth(String msg) {
-  Serial.println(msg);
-  bluetooth.println(msg);
 }
 
 /**
@@ -366,35 +440,33 @@ void checkBluetoothCommand() {
  * @param cmd 명령 문자열
  * @param source 명령 출처 ("Serial" 또는 "Bluetooth")
  */
-void processCommand(char* cmd, String source) {
-  printToBoth("[명령 수신 from " + source + "] " + String(cmd));
+void processCommand(char* cmd, const char* source) {
+  // 시리얼에만 간단히 출력
+  Serial.print(F("["));
+  Serial.print(cmd);
+  Serial.println(F("]"));
   
   // start 명령
   if (strcmp(cmd, "start") == 0) {
     if (autoMode) {
-      printToBoth("[알림] 이미 자동화 모드가 실행 중입니다.");
+      printToBoth(F("[알림] 이미 자동화 모드가 실행 중입니다."));
       return;
     }
     
     autoMode = true;
     analogWrite(PIN_MOTOR_SPEED, MOTOR_SPEED);
     
-    printToBoth("========================================");
-    printToBoth("  자동화 시작");
-    printToBoth("========================================");
-    printToBoth("컨베이어 가동 시작\n");
-    
-    tone(PIN_BUZZER, 523, 100);
-    delay(150);
-    tone(PIN_BUZZER, 659, 100);
-    delay(150);
+    printToBoth(F("========================================"));
+    printToBoth(F("  자동화 시작"));
+    printToBoth(F("========================================"));
+    printToBoth(F("컨베이어 가동 시작\n"));
     return;
   }
   
   // stop 명령
   if (strcmp(cmd, "stop") == 0) {
     if (!autoMode) {
-      printToBoth("[알림] 이미 자동화 모드가 중지되어 있습니다.");
+      printToBoth(F("[알림] 이미 자동화 모드가 중지되어 있습니다."));
       return;
     }
     
@@ -407,16 +479,11 @@ void processCommand(char* cmd, String source) {
     }
     led.show();
     
-    printToBoth("========================================");
-    printToBoth("  자동화 중지");
-    printToBoth("========================================");
-    printToBoth("컨베이어 정지\n");
-    printToBoth("명령 대기중...\n");
-    
-    tone(PIN_BUZZER, 659, 100);
-    delay(150);
-    tone(PIN_BUZZER, 523, 100);
-    delay(150);
+    printToBoth(F("========================================"));
+    printToBoth(F("  자동화 중지"));
+    printToBoth(F("========================================"));
+    printToBoth(F("컨베이어 정지\n"));
+    printToBoth(F("명령 대기중...\n"));
     return;
   }
   
@@ -433,7 +500,7 @@ void processCommand(char* cmd, String source) {
       }
       led.show();
       
-      printToBoth("[알림] 자동화 모드를 먼저 중지합니다.");
+      printToBoth(F("[알림] 자동화 모드를 먼저 중지합니다."));
       delay(500);
     }
     
@@ -443,26 +510,48 @@ void processCommand(char* cmd, String source) {
     blueCount = 0;
     productCount = 0;
     
-    printToBoth("========================================");
-    printToBoth("  카운터 초기화");
-    printToBoth("========================================");
-    printToBoth("빨간색: 0");
-    printToBoth("초록색: 0");
-    printToBoth("파란색: 0");
-    printToBoth("전체 제품: 0");
-    printToBoth("========================================");
-    printToBoth("명령 대기중...\n");
+    printToBoth(F("========================================"));
+    printToBoth(F("  카운터 초기화"));
+    printToBoth(F("========================================"));
+    printToBoth(F("빨간색: 0"));
+    printToBoth(F("초록색: 0"));
+    printToBoth(F("파란색: 0"));
+    printToBoth(F("전체 제품: 0"));
+    printToBoth(F("========================================"));
+    printToBoth(F("명령 대기중...\n"));
+    return;
+  }
+  
+  // count 명령 (카운터 조회) - 실행/정지 상태 관계없이 작동
+  if (strcmp(cmd, "count") == 0) {
+    // 시리얼 출력만 (최소화)
+    Serial.print(F("R:"));
+    Serial.print(redCount);
+    Serial.print(F(" G:"));
+    Serial.print(greenCount);
+    Serial.print(F(" B:"));
+    Serial.print(blueCount);
+    Serial.print(F(" ["));
+    Serial.print(autoMode ? F("RUN") : F("STOP"));
+    Serial.println(F("]"));
+    Serial.flush();
     
-    tone(PIN_BUZZER, 784, 100);
-    delay(150);
-    tone(PIN_BUZZER, 523, 100);
-    delay(150);
-    tone(PIN_BUZZER, 784, 100);
-    delay(150);
+    delay(20);
+    
+    // 블루투스 전송 (쉼표 구분)
+    bluetooth.print(redCount);
+    bluetooth.print(',');
+    bluetooth.print(greenCount);
+    bluetooth.print(',');
+    bluetooth.println(blueCount);
+    bluetooth.flush();
+    
+    delay(20);
+    
     return;
   }
   
   // 알 수 없는 명령
-  printToBoth("[오류] 알 수 없는 명령: " + String(cmd));
-  printToBoth("사용 가능: start_, stop_, init_\n");
+  printToBoth(F("[오류] 알 수 없는 명령"));
+  printToBoth(F("사용 가능: start_, stop_, init_, count_\n"));
 }
