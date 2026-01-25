@@ -1,44 +1,31 @@
 /**
- * 로봇 팔 - 5단계: Bluetooth EEPROM 자동화 시스템
+ * 로봇 팔 - 6단계: Bluetooth EEPROM 자동화 시스템 (전력 최적화)
  * 
  * Bluetooth로 위치를 저장하고 자동 재생
  * - 조이스틱으로 로봇 팔 제어
- * - Bluetooth/Serial 명령으로 위치 저장/재생
+ * - Bluetooth 명령으로 위치 저장/재생
  * - EEPROM에 최대 12단계 저장
+ * - Serial은 디버깅용으로만 최소 사용
  * 
- * 명령어 형식:
- * ① Serial 통신: save, play, auto, stop, clear, list (Enter로 전송)
- * ② Bluetooth: save_, play_, auto_, stop_, clear_, list_ (_로 종료)
- * 
- * 명령어:
- * - save  : 현재 위치 저장
- * - play  : 저장된 동작 1회 재생
- * - auto  : 저장된 동작 계속 반복
- * - stop  : 자동 반복 중지
- * - clear : 모든 위치 삭제
- * - list  : 저장된 위치 목록
+ * 명령어 (Bluetooth):
+ * - save_  : 현재 위치 저장
+ * - play_  : 저장된 동작 1회 재생
+ * - auto_  : 저장된 동작 계속 반복
+ * - stop_  : 자동 반복 중지
+ * - clear_ : 모든 위치 삭제
+ * - list_  : 저장된 위치 목록
  * 
  * Bluetooth 연결:
  * - TX: 2번 핀 (아두이노) ← RX (HC-05/06)
  * - RX: 3번 핀 (아두이노) ← TX (HC-05/06)
- * - HC-05/HC-06 모듈 사용
  * 
- * App Inventor에서 사용 시:
- * - "play_" 형식으로 전송 (마지막 _ 필수!)
- * - Serial Monitor를 열어서 수신 상태 확인
+ * 전력 최적화:
+ * - Bluetooth 출력 최소화 (전력 소모 감소)
+ * - Serial 출력 최소화 (디버깅용만)
+ * - delay 최적화
  * 
- * 디버그 모드:
- * - ENABLE_DEBUG 1: 자세한 디버그 메시지 (개발용, 메모리 많이 사용)
- * - ENABLE_DEBUG 0: 간단한 메시지만 (운영용, 메모리 절약)
- * 
- * 중요 - 전원 관련:
- * - 서보 4개 + Bluetooth 모듈은 높은 전력 소비
- * - USB 전원만으로는 부족 → 외부 5V 전원 필수!
- * - save 명령 시 재부팅되면 전원 부족 문제
- * 
- * 문제 발생 시:
- * - ENABLE_BLUETOOTH를 0으로 설정하여 테스트
- * - 외부 5V 전원 연결 확인
+ * 중요:
+ * - 외부 5V 전원 필수! (USB만으로는 부족)
  */
 
 #include <Servo.h>
@@ -88,59 +75,57 @@ unsigned long lastCharTime = 0;   // 마지막 문자 수신 시간
 #define CMD_TIMEOUT 100           // 명령어 타임아웃 (ms)
 
 void setup() {
+#if ENABLE_DEBUG
   Serial.begin(9600);
+  delay(50);
+  Serial.println("v1.1");
+#endif
   
-  delay(100);  // Serial 안정화
-  
-  Serial.println("Robot Arm BT System v1.0\n");
-  
-  // 서보 모터를 하나씩 천천히 초기화 (과전류 방지)
+  // 서보 모터 초기화 (과전류 방지)
   for (int i = 0; i < 4; i++) {
     servo[i].attach(pin[i]);
-    delay(200);
+    delay(150);  // 전력 소모 최소화
     
     int currentPos = servo[i].read();
     if (currentPos < 0 || currentPos > 180) currentPos = 90;
     
-    // 천천히 목표 각도로 이동
+    // 목표 각도로 부드럽게 이동
     if (currentPos < angles[i]) {
       for (int pos = currentPos; pos <= angles[i]; pos++) {
         servo[i].write(pos);
-        delay(20);
+        delay(15);
       }
     } else {
       for (int pos = currentPos; pos >= angles[i]; pos--) {
         servo[i].write(pos);
-        delay(20);
+        delay(15);
       }
     }
-    delay(300);
+    delay(200);
   }
   
-  // EEPROM에서 저장된 위치 개수 읽기
+  // EEPROM 데이터 읽기
   savedCount = EEPROM.read(EEPROM_ADDR_COUNT);
   if (savedCount > MAX_POSITIONS) {
     savedCount = 0;
     EEPROM.write(EEPROM_ADDR_COUNT, 0);
   }
   
-  Serial.println("Commands: save_, play_, auto_, stop_, clear_, list_");
-  Serial.print("Saved: ");
+#if ENABLE_DEBUG
+  Serial.print("Data:");
   Serial.print(savedCount);
   Serial.print("/");
   Serial.println(MAX_POSITIONS);
+#endif
   
   // Bluetooth 초기화
 #if ENABLE_BLUETOOTH
   BTSerial.begin(9600);
-  delay(500);
-  Serial.println("BT Ready");
-#if ENABLE_DEBUG == 0
-  Serial.println("Debug OFF (메모리 절약 모드)");
+  delay(300);  // 최소 대기 시간
+#if ENABLE_DEBUG
+  Serial.println("BT OK");
 #endif
 #endif
-  
-  Serial.println("Ready!\n");
 }
 
 void loop() {
@@ -166,10 +151,7 @@ void loop() {
 }
 
 /**
- * 조이스틱 제어
- * 
- * 주의: 조이스틱 출력은 Serial만 사용!
- * BTSerial 출력 시 SoftwareSerial과 Servo 타이머 충돌로 과부하 발생
+ * 조이스틱 제어 (출력 최소화)
  */
 void handleJoystick() {
   // 조이스틱 값 읽기
@@ -193,37 +175,21 @@ void handleJoystick() {
     }
   }
   
-  // 변경된 서보만 출력
-  for (int i = 0; i < 4; i++) {
-    if (angles[i] != prevAngles[i]) {
-#if ENABLE_DEBUG
-      Serial.print(i);
-      Serial.print(":");
-      Serial.println(angles[i]);
-#endif
-      prevAngles[i] = angles[i];
-    }
-  }
-  
   delay(20);
 }
 
 /**
- * Serial/Bluetooth 명령 처리
+ * Bluetooth 명령 처리 (Serial 출력 최소화)
  */
 void handleCommand() {
-  // 재생 중에는 stop 명령만 처리 (다른 명령은 무시하여 안정성 확보)
+  // 재생 중에는 stop 명령만 처리
   if (isPlaying) {
-    // stop 명령 확인
     char ch = '\0';
 #if ENABLE_BLUETOOTH
     if (BTSerial.available() > 0) {
       ch = BTSerial.read();
-    } else
-#endif
-    if (Serial.available() > 0) {
-      ch = Serial.read();
     }
+#endif
     
     if (ch != '\0') {
       if (ch == '\n' || ch == '\r' || ch == '_') {
@@ -240,58 +206,39 @@ void handleCommand() {
         lastCharTime = millis();
       }
     }
-    return;  // 재생 중에는 여기서 종료
+    return;
   }
   
-  // 타임아웃 체크: 마지막 문자 수신 후 일정 시간이 지나면 명령 처리
+  // 타임아웃 체크
   if (cmdIndex > 0 && (millis() - lastCharTime) > CMD_TIMEOUT) {
     cmdBuffer[cmdIndex] = '\0';
-#if ENABLE_DEBUG
-    Serial.print("[타임아웃] ");
-    Serial.println(cmdBuffer);
-#endif
-    processCommand(false);
+    processCommand();
     cmdIndex = 0;
     return;
   }
   
-  // Serial 또는 Bluetooth에서 입력 받기
+  // Bluetooth에서 명령 받기
   char ch = '\0';
-  bool fromBT = false;
   
 #if ENABLE_BLUETOOTH
   if (BTSerial.available() > 0) {
     ch = BTSerial.read();
-    fromBT = true;
-    lastCharTime = millis();
-#if ENABLE_DEBUG
-    Serial.print("[BT] ");
-    Serial.print(ch);
-    Serial.print(" (");
-    Serial.print((int)ch);
-    Serial.println(")");
-#endif
-  }
-  else
-#endif
-  if (Serial.available() > 0) {
-    ch = Serial.read();
-    fromBT = false;
     lastCharTime = millis();
   }
+#endif
   
   if (ch == '\0') return;
   
-  // 개행 문자 또는 '_' 문자를 만나면 명령 처리
+  // 명령 종료 문자 확인
   if (ch == '\n' || ch == '\r' || ch == '_') {
     if (cmdIndex > 0) {
       cmdBuffer[cmdIndex] = '\0';
-      
-      // 명령어 수신 알림 (간단하게)
-      Serial.print("[수신] ");
-      Serial.println(cmdBuffer);
-      
-      processCommand(fromBT);
+#if ENABLE_DEBUG
+      Serial.print("[");
+      Serial.print(cmdBuffer);
+      Serial.println("]");
+#endif
+      processCommand();
       cmdIndex = 0;
     }
     return;
@@ -308,40 +255,23 @@ void handleCommand() {
 }
 
 /**
- * 명령 처리
+ * 명령 처리 (최소 출력)
  */
-void processCommand(bool fromBT) {
-  // 명령 출처 표시 (디버깅용)
-  Serial.print("[처리] ");
-  if (fromBT) {
-    Serial.print("BT: ");
-  } else {
-    Serial.print("Serial: ");
-  }
-  Serial.print("'");
-  Serial.print(cmdBuffer);
-  Serial.println("'");
-  
+void processCommand() {
   // save 명령
   if (strcmp(cmdBuffer, "save") == 0) {
     saveCurrentPosition();
   }
   // play 명령 (1회 재생)
   else if (strcmp(cmdBuffer, "play") == 0) {
-    Serial.println("[대기] play 명령 준비");
-    
-    // 블루투스 버퍼 비우기 (잔여 데이터 제거)
+    // 블루투스 버퍼 비우기
 #if ENABLE_BLUETOOTH
     while (BTSerial.available() > 0) {
       BTSerial.read();
     }
 #endif
-    
-    // 명령 버퍼 초기화
     cmdIndex = 0;
     cmdBuffer[0] = '\0';
-    
-    // 플래그 설정 (loop()에서 안전하게 실행)
     playOnce = true;
     autoRepeat = false;
     isPlaying = false;
@@ -362,118 +292,80 @@ void processCommand(bool fromBT) {
   else if (strcmp(cmdBuffer, "list") == 0) {
     listAllPositions();
   }
+#if ENABLE_DEBUG
   else {
-    Serial.print("[오류] 알 수 없는 명령: '");
-    Serial.print(cmdBuffer);
-    Serial.print("' (길이: ");
-    Serial.print(strlen(cmdBuffer));
-    Serial.println(")");
-#if ENABLE_BLUETOOTH
-    BTSerial.print("[오류] 알 수 없는 명령: ");
-    BTSerial.println(cmdBuffer);
-#endif
+    Serial.print("ERR:");
+    Serial.println(cmdBuffer);
   }
+#endif
 }
 
 /**
- * 현재 위치 저장
+ * 현재 위치 저장 (전력 최적화)
  */
 void saveCurrentPosition() {
   if (savedCount >= MAX_POSITIONS) {
-    Serial.println("[Full]");
-#if ENABLE_BLUETOOTH
-    BTSerial.println("[Full]");
+#if ENABLE_DEBUG
+    Serial.println("Full");
 #endif
     return;
   }
   
-  // 서보 타이머 충돌 방지: EEPROM 쓰기 전에 서보 일시 중지
+  // 서보 일시 중지
   for (int i = 0; i < 4; i++) {
     servo[i].detach();
   }
-  delay(50);  // 서보 타이머 안정화
+  delay(30);
   
-  // EEPROM에 현재 각도 저장 (하나씩 천천히)
+  // EEPROM에 저장
   int addr = EEPROM_ADDR_START + (savedCount * 4);
   for (int i = 0; i < 4; i++) {
     EEPROM.write(addr + i, angles[i]);
-    delay(5);  // EEPROM 쓰기 안정화
+    delay(4);
   }
   
-  // 저장된 개수 업데이트
   savedCount++;
   EEPROM.write(EEPROM_ADDR_COUNT, savedCount);
-  delay(5);
+  delay(4);
   
-  // 서보 다시 연결
+  // 서보 재연결
   for (int i = 0; i < 4; i++) {
     servo[i].attach(pin[i]);
     servo[i].write(angles[i]);
-    delay(20);
+    delay(15);
   }
   
-  // 저장 완료 메시지 (한 줄로, 각도 포함)
-  Serial.print("[Save OK #");
-  Serial.print(savedCount);
-  Serial.print(": ");
-  Serial.print(angles[0]);
-  Serial.print(",");
-  Serial.print(angles[1]);
-  Serial.print(",");
-  Serial.print(angles[2]);
-  Serial.print(",");
-  Serial.print(angles[3]);
-  Serial.println("]");
-  
-#if ENABLE_BLUETOOTH
-  delay(10);
-  BTSerial.print("[Save OK #");
-  BTSerial.print(savedCount);
-  BTSerial.print(": ");
-  BTSerial.print(angles[0]);
-  BTSerial.print(",");
-  BTSerial.print(angles[1]);
-  BTSerial.print(",");
-  BTSerial.print(angles[2]);
-  BTSerial.print(",");
-  BTSerial.print(angles[3]);
-  BTSerial.println("]");
+#if ENABLE_DEBUG
+  Serial.print("Save#");
+  Serial.println(savedCount);
 #endif
 }
 
 void startAutoMode() {
   if (savedCount == 0) {
-    Serial.println("[Auto fail: No data]");
-#if ENABLE_BLUETOOTH
-    BTSerial.println("[Auto fail: No data]");
+#if ENABLE_DEBUG
+    Serial.println("NoData");
 #endif
     return;
   }
   
-  // 블루투스 버퍼 비우기 (잔여 데이터 제거)
+  // 버퍼 비우기
 #if ENABLE_BLUETOOTH
   while (BTSerial.available() > 0) {
     BTSerial.read();
   }
 #endif
   
-  // 명령 버퍼 초기화
   cmdIndex = 0;
   cmdBuffer[0] = '\0';
-  
   autoRepeat = true;
   playOnce = false;
   isPlaying = false;
   repeatCount = 0;
   
-  Serial.print("[Auto OK: ");
-  Serial.print(savedCount);
-  Serial.println(" steps]");
-#if ENABLE_BLUETOOTH
-  delay(10);
-  BTSerial.print("[Auto OK: ");
-  BTSerial.print(savedCount);
-  BTSerial.println(" steps]");
+#if ENABLE_DEBUG
+  Serial.print("Auto:");
+  Serial.println(savedCount);
 #endif
 }
 
@@ -482,63 +374,35 @@ void stopAutoMode() {
   playOnce = false;
   isPlaying = false;
   
-  // 블루투스 버퍼 비우기
+  // 버퍼 비우기
 #if ENABLE_BLUETOOTH
   while (BTSerial.available() > 0) {
     BTSerial.read();
   }
 #endif
   
-  // 명령 버퍼 초기화
   cmdIndex = 0;
   cmdBuffer[0] = '\0';
   
-  Serial.print("[Stop OK: ");
-  Serial.print(repeatCount);
-  Serial.println(" times]");
-#if ENABLE_BLUETOOTH
-  delay(10);
-  BTSerial.print("[Stop OK: ");
-  BTSerial.print(repeatCount);
-  BTSerial.println(" times]");
+#if ENABLE_DEBUG
+  Serial.print("Stop:");
+  Serial.println(repeatCount);
 #endif
 }
 
 void playAllPositions() {
   if (savedCount == 0) {
-    Serial.println("[Play fail: No data]");
-#if ENABLE_BLUETOOTH
-    BTSerial.println("[Play fail: No data]");
-#endif
     autoRepeat = false;
     return;
   }
   
-  // play 명령 시작 메시지
-  if (!autoRepeat) {
-    Serial.print("[Play OK: ");
-    Serial.print(savedCount);
-    Serial.println(" steps]");
-#if ENABLE_BLUETOOTH
-    delay(10);
-    BTSerial.print("[Play OK: ");
-    BTSerial.print(savedCount);
-    BTSerial.println(" steps]");
-#endif
-  }
-  
   if (autoRepeat) {
     repeatCount++;
-#if ENABLE_DEBUG
-    Serial.print("[#");
-    Serial.print(repeatCount);
-    Serial.println("]");
-#endif
   }
   
   isPlaying = true;
   
-  // 모든 저장된 위치를 순차적으로 재생
+  // 모든 저장된 위치 재생
   for (int pos = 0; pos < savedCount; pos++) {
     handleCommand();
     if (!autoRepeat && !isPlaying) return;
@@ -551,32 +415,23 @@ void playAllPositions() {
     for (int i = 0; i < 4; i++) {
       targetAngles[i] = EEPROM.read(addr + i);
       
-      // EEPROM 데이터 유효성 검사 (0-180 범위)
+      // 유효성 검사
       if (targetAngles[i] < 0 || targetAngles[i] > 180) {
-        Serial.print("[Error] Invalid angle #");
-        Serial.print(pos + 1);
-        Serial.print(" servo ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(targetAngles[i]);
         dataValid = false;
         break;
       }
     }
     
-    // 데이터가 유효하지 않으면 건너뛰기
+    // 유효하지 않으면 건너뛰기
     if (!dataValid) {
-      Serial.println("[Skip] Invalid data in EEPROM");
-#if ENABLE_BLUETOOTH
-      BTSerial.println("[Skip] Invalid data");
-#endif
       continue;
     }
     
-    // 목표 각도 출력 (항상 출력하여 디버깅 가능하게)
-    Serial.print("→#");
+#if ENABLE_DEBUG
+    // 디버그 모드에서만 각도 출력
+    Serial.print("#");
     Serial.print(pos + 1);
-    Serial.print(": ");
+    Serial.print(":");
     Serial.print(targetAngles[0]);
     Serial.print(",");
     Serial.print(targetAngles[1]);
@@ -584,25 +439,17 @@ void playAllPositions() {
     Serial.print(targetAngles[2]);
     Serial.print(",");
     Serial.println(targetAngles[3]);
+#endif
     
-    // 부드럽게 이동
+    // 이동
     if (!moveToPosition(targetAngles)) return;
     
-    // 다음 위치로 이동 전 대기
+    // 대기
     for (int i = 0; i < 100; i++) {
       handleCommand();
       if (!autoRepeat && !isPlaying) return;
       delay(10);
     }
-  }
-  
-  // play 완료 메시지
-  if (!autoRepeat) {
-    Serial.println("[Play Done]");
-#if ENABLE_BLUETOOTH
-    delay(10);
-    BTSerial.println("[Play Done]");
-#endif
   }
   
   isPlaying = false;
@@ -643,60 +490,43 @@ bool moveToPosition(int target[]) {
 }
 
 void clearAllPositions() {
-  int oldCount = savedCount;  // 삭제 전 개수 저장
-  
   autoRepeat = false;
+  playOnce = false;
   isPlaying = false;
   repeatCount = 0;
   
-  // 서보 타이머 충돌 방지
+  // 서보 일시 중지
   for (int i = 0; i < 4; i++) {
     servo[i].detach();
   }
-  delay(50);
+  delay(30);
   
   // EEPROM 초기화
   savedCount = 0;
   EEPROM.write(EEPROM_ADDR_COUNT, 0);
-  delay(10);
+  delay(5);
   
-  // 서보 다시 연결
+  // 서보 재연결
   for (int i = 0; i < 4; i++) {
     servo[i].attach(pin[i]);
     servo[i].write(angles[i]);
-    delay(20);
+    delay(15);
   }
   
-  Serial.print("[Clear OK: ");
-  Serial.print(oldCount);
-  Serial.println(" deleted]");
-#if ENABLE_BLUETOOTH
-  delay(10);
-  BTSerial.print("[Clear OK: ");
-  BTSerial.print(oldCount);
-  BTSerial.println(" deleted]");
+#if ENABLE_DEBUG
+  Serial.println("Clear");
 #endif
 }
 
 void listAllPositions() {
+#if ENABLE_DEBUG
   if (savedCount == 0) {
-    Serial.println("[List OK: Empty]");
-#if ENABLE_BLUETOOTH
-    BTSerial.println("[List OK: Empty]");
-#endif
+    Serial.println("Empty");
     return;
   }
   
-  Serial.print("[List OK: ");
-  Serial.print(savedCount);
-  Serial.println(" steps]");
-  
-#if ENABLE_BLUETOOTH
-  delay(10);
-  BTSerial.print("[List OK: ");
-  BTSerial.print(savedCount);
-  BTSerial.println(" steps]");
-#endif
+  Serial.print("List:");
+  Serial.println(savedCount);
   
   // 각 저장된 위치 출력
   for (int pos = 0; pos < savedCount; pos++) {
@@ -704,37 +534,14 @@ void listAllPositions() {
     
     Serial.print("#");
     Serial.print(pos + 1);
-    Serial.print(": ");
+    Serial.print(":");
     
-    // EEPROM에서 데이터 읽기 및 유효성 검사
-    bool hasInvalid = false;
     for (int i = 0; i < 4; i++) {
-      int value = EEPROM.read(addr + i);
-      Serial.print(value);
+      Serial.print(EEPROM.read(addr + i));
       if (i < 3) Serial.print(",");
-      
-      // 유효성 검사 (0-180 범위 확인)
-      if (value < 0 || value > 180) {
-        hasInvalid = true;
-      }
-    }
-    
-    if (hasInvalid) {
-      Serial.print(" [INVALID!]");
     }
     Serial.println();
-    
-#if ENABLE_BLUETOOTH
-    delay(10);
-    BTSerial.print("#");
-    BTSerial.print(pos + 1);
-    BTSerial.print(": ");
-    for (int i = 0; i < 4; i++) {
-      BTSerial.print(EEPROM.read(addr + i));
-      if (i < 3) BTSerial.print(",");
-    }
-    BTSerial.println();
-#endif
   }
+#endif
 }
 
