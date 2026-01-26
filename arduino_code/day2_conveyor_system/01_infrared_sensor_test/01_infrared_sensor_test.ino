@@ -34,28 +34,22 @@ void setup() {
   Serial.println("========================================\n");
 }
 
-/**
- * 메인 루프
- */
+/***/
 void loop() {
   // 센서 읽기 (LOW = 감지됨, HIGH = 미감지)
-  bool detected = (digitalRead(PIN_IR_SENSOR) == LOW);
+
   
   // LED 제어
   if (detected) {
     digitalWrite(PIN_LED, HIGH);
     
-    // 처음 감지되었을 때만 부저 울림
-    if (!lastDetected) {
-      tone(PIN_BUZZER, 523, 50);
-      Serial.println("[상태 변화] 물체 감지됨");
-    }
+    tone(PIN_BUZZER, 523, 50);
+    Serial.println("[상태 변화] 물체 감지됨");
+    
   } else {
     digitalWrite(PIN_LED, LOW);
+    Serial.println("[상태 변화] 물체 미감지");
     
-    if (lastDetected) {
-      Serial.println("[상태 변화] 물체 미감지");
-    }
   }
   
   lastDetected = detected;

@@ -67,10 +67,10 @@ graph TB
     B --> H[RGB LED]
     B --> I[부저]
     
-    style A fill:#e1f5ff
-    style B fill:#ffe1e1
-    style D fill:#fff4e1
-    style G fill:#e1ffe1
+    style A fill:#e1f5ff,color:#111
+    style B fill:#ffe1e1,color:#111
+    style D fill:#fff4e1,color:#111
+    style G fill:#e1ffe1,color:#111
 ```
 
 ---
@@ -132,13 +132,13 @@ flowchart TD
     DelayNext --> Complete[제품 처리 완료]
     Complete --> CheckAuto
     
-    style Start fill:#e1f5ff
-    style Init fill:#ffe1e1
-    style Wait fill:#fff4e1
-    style AutoStart fill:#e1ffe1
-    style Red fill:#ffcccc
-    style Green fill:#ccffcc
-    style Blue fill:#ccccff
+    style Start fill:#e1f5ff,color:#111
+    style Init fill:#ffe1e1,color:#111
+    style Wait fill:#fff4e1,color:#111
+    style AutoStart fill:#e1ffe1,color:#111
+    style Red fill:#ffcccc,color:#111
+    style Green fill:#ccffcc,color:#111
+    style Blue fill:#ccccff,color:#111
 ```
 
 ---
@@ -395,9 +395,9 @@ graph TD
     G --> M[LED 0,255,0]
     H --> N[LED 0,0,255]
     
-    style E fill:#ffcccc
-    style G fill:#ccffcc
-    style H fill:#ccccff
+    style E fill:#ffcccc,color:#111
+    style G fill:#ccffcc,color:#111
+    style H fill:#ccccff,color:#111
 ```
 
 ### 색상 판별 조건
