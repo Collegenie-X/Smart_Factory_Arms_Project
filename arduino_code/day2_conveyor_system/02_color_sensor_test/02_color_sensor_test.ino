@@ -3,7 +3,7 @@
  * 
  * 기능: TCS34725 센서로 색상 측정 및 판별
  * - RGB 값 측정 및 출력
- * - 색상 자동 판별 (빨강, 초록, 파랑)
+ * - 색상 자동 판별 (빨강, 초록, 파랑, 노랑)
  */
 
 /* ===== 라이브러리 ===== */
@@ -27,7 +27,7 @@ Adafruit_TCS34725 colorSensor = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS,
 
 uint16_t rawR, rawG, rawB, rawC;  // Raw 값
 int r, g, b;                       // 매핑된 값
-int lastColor = 0;                 // 이전 색상 (0=없음, 1=빨강, 2=초록, 3=파랑)
+int lastColor = 0;                 // 이전 색상 (0=없음, 1=빨강, 2=초록, 3=파랑, 4=노랑)
 
 /**
  * 초기화
@@ -100,7 +100,11 @@ void loop() {
   const char* colorName = "없음";
   
   if (sum >= MIN_SUM) {
-    if (r > g && r > b) {
+    // 노란색 판별: R과 G가 모두 높고 비슷하며, B가 낮은 경우
+    if (r > b && g > b && abs(r - g) < (r + g) / 4) {
+      currentColor = 4;  // 노랑
+      colorName = "노란색";
+    } else if (r > g && r > b) {
       currentColor = 1;  // 빨강
       colorName = "빨간색";
     } else if (g > r && g > b) {
@@ -123,6 +127,7 @@ void loop() {
     if (currentColor == 1) frequency = 523;  // 빨강: 도
     if (currentColor == 2) frequency = 659;  // 초록: 미
     if (currentColor == 3) frequency = 784;  // 파랑: 솔
+    if (currentColor == 4) frequency = 698;  // 노랑: 파
     
     tone(PIN_BUZZER, frequency, 50);
     Serial.println("\n>>> 색상 변화 감지! <<<\n");
