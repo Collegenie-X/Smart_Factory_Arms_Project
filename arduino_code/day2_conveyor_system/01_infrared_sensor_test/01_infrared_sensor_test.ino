@@ -37,7 +37,7 @@ void setup() {
 /***/
 void loop() {
   // 센서 읽기 (LOW = 감지됨, HIGH = 미감지)
-
+  int detected = !digitalRead(PIN_IR_SENSOR);
   
   // LED 제어
   if (detected) {
