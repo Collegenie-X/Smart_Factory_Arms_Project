@@ -95,25 +95,37 @@ void loop() {
   Serial.print("합계: ");
   Serial.println(sum);
   
-  // 4. 색상 판별
+  // 4. 색상 판별 (비율 기반)
   int currentColor = 0;  // 0=없음
   const char* colorName = "없음";
   
   if (sum >= MIN_SUM) {
-    // 노란색 판별: R과 G가 모두 높고 비슷하며, B가 낮은 경우
-    if (r > b && g > b && abs(r - g) < (r + g) / 4) {
+    // 최대값 찾기
+    int maxVal = max(max(r, g), b);
+    int minVal = min(min(r, g), b);
+    
+    // 노란색 판별: R과 G가 모두 높고 비슷하며, B가 훨씬 낮은 경우
+    // 조건: R과 G가 B보다 1.5배 이상 크고, R과 G의 차이가 최대값의 30% 이내
+    if (r > b * 1.5 && g > b * 1.5 && abs(r - g) < maxVal * 0.3) {
       currentColor = 4;  // 노랑
       colorName = "노란색";
-    } else if (r > g && r > b) {
+    } 
+    // 빨강 판별: R이 G와 B보다 명확히 큰 경우
+    else if (r > g * 1.3 && r > b * 1.3 && r == maxVal) {
       currentColor = 1;  // 빨강
       colorName = "빨간색";
-    } else if (g > r && g > b) {
+    } 
+    // 초록 판별: G가 R과 B보다 명확히 큰 경우
+    else if (g > r * 1.3 && g > b * 1.3 && g == maxVal) {
       currentColor = 2;  // 초록
       colorName = "초록색";
-    } else if (b > r && b > g) {
+    } 
+    // 파랑 판별: B가 R과 G보다 명확히 큰 경우
+    else if (b > r * 1.3 && b > g * 1.3 && b == maxVal) {
       currentColor = 3;  // 파랑
       colorName = "파란색";
-    } else {
+    } 
+    else {
       colorName = "알 수 없음";
     }
   }
