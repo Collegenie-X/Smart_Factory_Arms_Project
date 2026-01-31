@@ -99,11 +99,14 @@ graph LR
 이 프로젝트는 크게 **준비 단계**와 **실행 단계**로 나뉩니다.
 
 **🔧 준비 단계 (처음 한 번만 하면 돼요!)**
+```
 - 로봇 팔을 조립하고 전선을 연결해요
 - 스마트폰과 블루투스로 연결해요
 - 각 색상 구역의 위치를 로봇에게 가르쳐줘요 (예: "빨강은 여기!", "초록은 저기!")
+```
 
 **🚀 실행 단계 (자동으로 계속 반복돼요!)**
+```
 1. 시작 버튼을 누르면 자동 모드가 켜져요
 2. 3초마다 카메라가 자동으로 사진을 찍어요
 3. AI가 "빨강이다!" 또는 "초록이다!"라고 판단해요
@@ -111,7 +114,7 @@ graph LR
 5. 로봇 팔이 해당 구역으로 이동해요
 6. 개수가 하나 늘어나고, 화면에 표시돼요
 7. 다시 2번부터 반복! (중지 버튼을 누를 때까지)
-
+```
 아래 흐름도를 보면 이 과정이 한눈에 들어올 거예요!
 
 ```mermaid
@@ -162,31 +165,39 @@ flowchart TD
 우리 시스템은 크게 **3개의 영역**으로 나뉩니다:
 
 **📱 스마트폰 영역 (소프트웨어)**
+```
 - **사용자 화면 (UI)**: 버튼을 누르고 결과를 보는 곳이에요
 - **카메라**: 물체 사진을 찍어요
 - **Teachable Machine AI**: 사진을 보고 색상을 판단해요 (핵심!)
 - **블루투스 통신**: 로봇에게 명령을 보내는 통신 담당
+```
 
 **🔵 무선 통신 영역 (블루투스 모듈)**
+```
 - **HC-05/06 모듈**: 스마트폰과 아두이노 사이의 "무선 다리" 역할
 - 왜 블루투스를 쓰나요? 전선이 없으니까 로봇이 자유롭게 움직일 수 있어요!
+```
 
 **🤖 아두이노 영역 (하드웨어)**
+```
 - **블루투스 수신**: HC-05에서 날아온 명령을 받아요
 - **명령 처리 (Brain)**: 받은 명령을 해석하고 어떻게 할지 결정해요
 - **EEPROM 메모리**: 각 구역 위치를 기억해두는 "장기 기억" 저장소
 - **서보 모터 4개**: 실제로 로봇 팔을 움직이는 근육!
 - **조이스틱**: 사람이 직접 로봇 팔을 움직일 수 있는 컨트롤러
+```
 
 **어떻게 함께 작동하나요?**
 
 흐름을 따라가 보면:
+```
 1. 사용자가 UI에서 버튼 클릭 → 카메라 촬영
 2. AI가 분석 → "빨강!" 판단
 3. 블루투스로 `redCheck_` 명령 전송
 4. HC-05가 명령을 아두이노로 전달
 5. 아두이노 Brain이 명령 해석 → EEPROM에서 빨강 구역 위치 읽기
 6. 서보 모터들이 해당 위치로 이동!
+```
 
 ```mermaid
 graph TB
@@ -922,6 +933,26 @@ flowchart TD
 
 ## 6. 아두이노 프로그래밍
 
+> 📖 참고: [07_app_inventor_robot_arm_control.ino](file:///Users/kimjongphil/Documents/GitHub/Smart_Factory_Arms_Project/arduino_code/day1_arm_system/07_app_inventor_robot_arm_control/07_app_inventor_robot_arm_control.ino)
+
+### ⚡ 아두이노 핵심 함수 빠른 참조
+
+**이 섹션에서 배울 주요 함수들:**
+
+| 함수 | 역할 | 사용 예 |
+|------|------|---------|
+| **handleCommand()** | 블루투스 명령 수신 | 매 loop마다 호출 |
+| **processCommand()** | 명령 해석 및 실행 | 명령 완성 시 자동 호출 |
+| **goToRedZone()** | 빨강 구역 이동 | redCheck_ 수신 시 |
+| **goToGreenZone()** | 초록 구역 이동 | greenCheck_ 수신 시 |
+| **goToBlueZone()** | 파랑 구역 이동 | blueCheck_ 수신 시 |
+| **saveCurrentPosition()** | 현재 위치 저장 | save_ 수신 시 |
+| **loadPosition()** | EEPROM에서 위치 읽기 | 구역 이동 전 |
+| **moveToPosition()** | 부드럽게 이동 | 목표 위치로 이동 |
+| **sendCountData()** | 개수 데이터 전송 | 분류 후 앱에 전송 |
+
+---
+
 ### 6.1 코드 구조
 
 **아두이노 프로그램이 어떻게 작동하는지 이해하는 것이 중요해요!**
@@ -929,6 +960,7 @@ flowchart TD
 아두이노 프로그램은 크게 **2개의 주요 함수**로 이루어져 있어요:
 
 **1️⃣ setup() 함수 - "준비 단계"**
+```
 - 전원을 켜면 **딱 한 번만** 실행돼요
 - 무엇을 하나요?
   - 서보 모터 4개를 핀에 연결해요 (D4, D5, D6, D7)
@@ -936,17 +968,20 @@ flowchart TD
   - EEPROM에서 저장된 위치를 읽어와요 (전원 꺼져도 기억!)
   - Serial Monitor를 시작해요 (디버그용)
 - 마치 아침에 일어나서 준비 운동하는 것과 같아요!
+```
 
 **2️⃣ loop() 함수 - "계속 반복"**
+```
 - setup()이 끝나면 **무한 반복**으로 실행돼요
 - 무엇을 하나요?
   - **명령 받기**: 블루투스로 날아온 명령이 있나 계속 체크해요
   - **조이스틱 읽기**: 사람이 조이스틱을 움직이면 로봇 팔이 따라 움직여요
   - **명령 실행**: 받은 명령에 따라 동작해요 (`redCheck_` → 빨강 구역 이동)
 - 마치 계속해서 "할 일 없나? 할 일 없나?" 확인하는 거예요!
+```
 
 **명령 처리 흐름**
-
+```
 1. **명령 받기 (handleCommand)**: 블루투스에서 글자를 하나씩 받아요
    - 예: `r` → `re` → `red` → `redC` → ... → `redCheck_`
    - `_`를 만나면 "아! 명령 완성!"이라고 인식
@@ -957,6 +992,7 @@ flowchart TD
 
 3. **동작 실행**: 해당 함수가 실제 동작을 수행해요
    - EEPROM에서 위치 읽기 → 서보 모터 이동 → 개수 증가 → 응답 전송
+```
 
 ```mermaid
 graph TD
@@ -999,7 +1035,54 @@ graph TD
 
 ### 6.2 주요 함수 설명
 
-#### 함수 맵
+#### 함수 관계도 (호출 흐름)
+
+**함수들이 어떻게 서로 호출하는지 보여줍니다!**
+
+```mermaid
+graph TD
+    Setup[setup 함수<br/>초기화] --> Loop[loop 함수<br/>계속 반복]
+    
+    Loop --> HC[handleCommand<br/>명령 수신]
+    Loop --> HJ[handleJoystick<br/>조이스틱 제어]
+    
+    HC --> PC[processCommand<br/>명령 해석]
+    
+    PC --> Start[startAutoMode]
+    PC --> Stop[stopAutoMode]
+    PC --> Home[goToHome]
+    PC --> Save[saveCurrentPosition]
+    PC --> Red[goToRedZone]
+    PC --> Green[goToGreenZone]
+    PC --> Blue[goToBlueZone]
+    PC --> Parse[parseCountData]
+    
+    Red --> LP1[loadPosition<br/>EEPROM 읽기]
+    Green --> LP2[loadPosition<br/>EEPROM 읽기]
+    Blue --> LP3[loadPosition<br/>EEPROM 읽기]
+    Home --> LP4[loadPosition<br/>EEPROM 읽기]
+    
+    LP1 --> MP1[moveToPosition<br/>이동]
+    LP2 --> MP2[moveToPosition<br/>이동]
+    LP3 --> MP3[moveToPosition<br/>이동]
+    LP4 --> MP4[moveToPosition<br/>이동]
+    
+    Red --> SC1[saveCount<br/>개수 저장]
+    Green --> SC2[saveCount<br/>개수 저장]
+    Blue --> SC3[saveCount<br/>개수 저장]
+    
+    Red --> Send1[sendCountData<br/>전송]
+    Green --> Send2[sendCountData<br/>전송]
+    Blue --> Send3[sendCountData<br/>전송]
+    
+    Save --> SW[EEPROM.write<br/>위치 저장]
+    
+    style Setup fill:#4CAF50,color:#fff,color:#111
+    style Loop fill:#2196F3,color:#fff,color:#111
+    style PC fill:#FF9800,color:#fff,color:#111
+```
+
+#### 함수 맵 (기능별 분류)
 
 ```mermaid
 mindmap
@@ -1035,17 +1118,26 @@ mindmap
 
 #### 함수 상세 설명
 
-| 함수 이름 | 하는 일 | 입력 | 출력 |
-|----------|---------|------|------|
-| `handleCommand()` | 블루투스로 명령 받기 | 없음 | 없음 |
-| `processCommand()` | 받은 명령 해석하고 실행 | 없음 | 없음 |
-| `goToRedZone()` | 빨강 구역으로 이동 | 없음 | 없음 |
-| `goToGreenZone()` | 초록 구역으로 이동 | 없음 | 없음 |
-| `goToBlueZone()` | 파랑 구역으로 이동 | 없음 | 없음 |
-| `moveToPosition()` | 특정 위치로 이동 | 목표 각도[4] | 없음 |
-| `saveCurrentPosition()` | 현재 위치 EEPROM에 저장 | 없음 | 없음 |
-| `sendCountData()` | 개수 데이터 전송 | 없음 | "12,7,1_" |
-| `parseCountData()` | 받은 개수 데이터 해석 | "12,7,1_" | 없음 |
+| 함수 이름 | 하는 일 | 입력 | 출력 | 코드 라인 |
+|----------|---------|------|------|-----------|
+| `handleCommand()` | 블루투스로 명령 받기 | 없음 | 없음 | 157-198 |
+| `processCommand()` | 받은 명령 해석하고 실행 | 없음 | 없음 | 200-241 |
+| `goToRedZone()` | 빨강 구역으로 이동 + 카운트 | 없음 | 없음 | 295-317 |
+| `goToGreenZone()` | 초록 구역으로 이동 + 카운트 | 없음 | 없음 | 319-341 |
+| `goToBlueZone()` | 파랑 구역으로 이동 + 카운트 | 없음 | 없음 | 343-365 |
+| `moveToPosition()` | 부드럽게 이동 (1도씩) | 목표 각도[4] | 없음 | 513-536 |
+| `saveCurrentPosition()` | 현재 위치 EEPROM에 저장 | 없음 | 없음 | 367-420 |
+| `loadPosition()` | EEPROM에서 위치 읽기 | 주소, 배열 | bool | 422-437 |
+| `sendCountData()` | 개수 데이터 전송 | 없음 | "12,7,1_" | 475-485 |
+| `parseCountData()` | 받은 개수 데이터 해석 | "12,7,1_" | 없음 | 439-473 |
+| `saveCount()` | 개수를 EEPROM에 저장 | 주소, 값 | 없음 | 495-499 |
+| `loadCounts()` | EEPROM에서 개수 읽기 | 없음 | 없음 | 501-511 |
+
+**빠른 찾기:**
+- 명령 수신: 157번 줄 `handleCommand()`
+- 색상 구역 이동: 295, 319, 343번 줄
+- 위치 저장: 367번 줄 `saveCurrentPosition()`
+- 부드러운 이동: 513번 줄 `moveToPosition()`
 
 ### 6.3 EEPROM 메모리 구조
 
@@ -1144,20 +1236,50 @@ graph TB
 
 ### 6.4 핵심 코드 이해하기
 
-#### 명령 받기
+> 📖 참고: [07_app_inventor_robot_arm_control.ino](file:///Users/kimjongphil/Documents/GitHub/Smart_Factory_Arms_Project/arduino_code/day1_arm_system/07_app_inventor_robot_arm_control/07_app_inventor_robot_arm_control.ino)
+
+#### 명령 받기 (handleCommand)
+
+**블루투스로 한 글자씩 받아서 완전한 명령으로 만들어요!**
 
 ```cpp
 // 블루투스로 명령을 한 글자씩 받아서 모으기
 void handleCommand() {
-  char ch = BTSerial.read();  // 한 글자 읽기
+  char ch = '\0';
   
-  if (ch == '_') {              // 명령 끝 (_)을 만나면
-    processCommand();           // 명령 실행!
-  } else {
-    cmdBuffer[cmdIndex++] = ch; // 글자 모으기
+  // 블루투스에서 데이터 읽기
+  if (BTSerial.available() > 0) {
+    ch = BTSerial.read();
+    lastCharTime = millis();  // 마지막 수신 시간 기록
+  }
+  
+  if (ch == '\0') return;  // 받은 데이터 없으면 종료
+  
+  // 종료 문자 확인 (_)
+  if (ch == '_') {
+    if (cmdIndex > 0) {
+      cmdBuffer[cmdIndex] = '\0';  // 문자열 종료
+      processCommand();            // 명령 실행!
+      cmdIndex = 0;                // 버퍼 초기화
+    }
+    return;
+  }
+  
+  // 버퍼에 글자 추가
+  if (cmdIndex < 29) {
+    cmdBuffer[cmdIndex++] = ch;
   }
 }
 ```
+
+**왜 한 글자씩 받나요?**
+
+블루투스는 데이터를 **순차적으로** 보내요. "redCheck_"를 보내면:
+- 1번째: 'r'
+- 2번째: 'e'
+- 3번째: 'd'
+- ...
+- 9번째: '_' ← 이때 "명령 완성!"
 
 ```mermaid
 flowchart LR
@@ -1169,35 +1291,633 @@ flowchart LR
     style J fill:#C8E6C9,color:#111
 ```
 
-#### 빨강 구역 이동
+---
+
+#### 명령 실행 (processCommand)
+
+**완성된 명령을 분석해서 해당 함수를 호출해요!**
 
 ```cpp
-void goToRedZone() {
-  // 1. EEPROM에서 빨강 구역 위치 읽기
-  int redAngles[4];
-  loadPosition(EEPROM_ADDR_RED, redAngles);
+void processCommand() {
+  // 문자열 비교로 명령 확인
   
-  // 2. 로봇 팔 이동
-  moveToPosition(redAngles);
-  
-  // 3. 개수 세기
-  redCount++;
-  
-  // 4. 스마트폰에 알려주기
-  sendCountData();  // "13,7,1_" 전송
+  if (strcmp(cmdBuffer, "start") == 0) {
+    startAutoMode();           // 자동 모드 시작
+  }
+  else if (strcmp(cmdBuffer, "stop") == 0) {
+    stopAutoMode();            // 자동 모드 중지
+  }
+  else if (strcmp(cmdBuffer, "reset") == 0) {
+    goToHome();                // 초기 위치
+    sendStatus("reset");
+  }
+  else if (strcmp(cmdBuffer, "save") == 0) {
+    saveCurrentPosition();     // 현재 위치 저장
+  }
+  else if (strcmp(cmdBuffer, "redCheck") == 0) {
+    goToRedZone();             // 빨강 구역 이동
+  }
+  else if (strcmp(cmdBuffer, "greenCheck") == 0) {
+    goToGreenZone();           // 초록 구역 이동
+  }
+  else if (strcmp(cmdBuffer, "blueCheck") == 0) {
+    goToBlueZone();            // 파랑 구역 이동
+  }
+  // 쉼표가 있으면 카운트 데이터
+  else if (strchr(cmdBuffer, ',') != NULL) {
+    parseCountData(cmdBuffer); // "12,7,1" 파싱
+  }
 }
 ```
 
+**strcmp() 함수란?**
+
+두 문자열이 같은지 비교하는 함수예요.
+- 같으면 → 0 반환
+- 다르면 → 0이 아닌 값 반환
+
+```cpp
+strcmp("redCheck", "redCheck")  → 0 (같음!)
+strcmp("redCheck", "blueCheck") → 0 아님 (다름!)
+```
+
+---
+
+#### 빨강 구역 이동 (goToRedZone)
+
+**핵심! 색상 구역으로 이동하고 개수를 세는 함수예요!**
+
+```cpp
+void goToRedZone() {
+  // 1단계: 현재 모드를 빨강으로 설정
+  currentMode = MODE_RED;
+  
+  // 2단계: EEPROM에서 빨강 구역 위치 읽기
+  int redAngles[4];  // 서보 4개 각도 배열
+  
+  if (loadPosition(EEPROM_ADDR_RED, redAngles)) {
+    // 3단계: 로봇 팔을 해당 위치로 이동
+    moveToPosition(redAngles);
+    
+    // 4단계: 빨강 개수 증가
+    redCount++;
+    
+    // 5단계: EEPROM에 개수 저장 (전원 꺼도 기억)
+    saveCount(EEPROM_ADDR_RED_CNT, redCount);
+    
+    // 6단계: 앱에 현재 개수 전송
+    sendCountData();  // "13,7,1_" 형식
+    
+    // 디버그 출력
+    Serial.print("[Move] Red: ");
+    printAngles(redAngles);
+    Serial.print(" Count:");
+    Serial.println(redCount);
+  } 
+  else {
+    // 저장된 위치가 없으면 에러
+    Serial.println("[ERR] Red position not saved");
+  }
+}
+```
+
+**중요한 부분 설명:**
+
+**currentMode = MODE_RED;**
+- 현재 모드를 빨강으로 설정
+- 나중에 `save_` 명령을 받으면, 이 모드에 맞는 EEPROM 주소에 저장해요
+
+**loadPosition(EEPROM_ADDR_RED, redAngles)**
+- EEPROM 주소 4~7에서 빨강 구역 각도 읽기
+- redAngles[0] = 45° (베이스)
+- redAngles[1] = 90° (팔꿈치)
+- redAngles[2] = 80° (손목)
+- redAngles[3] = 30° (그립)
+
+**moveToPosition(redAngles)**
+- 서보 모터를 부드럽게 이동
+- 현재 각도에서 목표 각도까지 1도씩 천천히 이동
+
 ```mermaid
 graph LR
-    A[빨강 구역 이동 명령] --> B[EEPROM에서<br/>위치 읽기]
+    A[빨강 구역 이동 명령] --> B[EEPROM 주소 4~7<br/>데이터 읽기]
     B --> C[45°, 90°, 80°, 30°]
-    C --> D[로봇 팔 이동]
+    C --> D[서보 모터<br/>부드럽게 이동]
     D --> E[개수 +1<br/>12 → 13]
-    E --> F[13,7,1_ 전송]
+    E --> F[EEPROM 주소 16에<br/>13 저장]
+    F --> G[앱에 13,7,1_ 전송]
     
     style A fill:#FFCDD2,color:#111
     style E fill:#C8E6C9,color:#111
+```
+
+---
+
+#### EEPROM 위치 읽기 (loadPosition)
+
+**저장된 구역 위치를 EEPROM에서 읽어와요!**
+
+```cpp
+bool loadPosition(int addr, int targetAngles[]) {
+  bool dataValid = true;
+  
+  // EEPROM에서 4개 각도 읽기
+  for (int i = 0; i < 4; i++) {
+    targetAngles[i] = EEPROM.read(addr + i);
+    
+    // 유효성 검사 (0~180도 범위)
+    if (targetAngles[i] < 0 || targetAngles[i] > 180) {
+      dataValid = false;
+      break;
+    }
+  }
+  
+  return dataValid;  // 유효하면 true, 아니면 false
+}
+```
+
+**예시:**
+
+빨강 구역 위치를 읽을 때:
+```cpp
+int redAngles[4];
+loadPosition(EEPROM_ADDR_RED, redAngles);
+// EEPROM_ADDR_RED = 4 (주소)
+
+// 읽는 과정:
+EEPROM.read(4)  → redAngles[0] = 45  (베이스)
+EEPROM.read(5)  → redAngles[1] = 90  (팔꿈치)
+EEPROM.read(6)  → redAngles[2] = 80  (손목)
+EEPROM.read(7)  → redAngles[3] = 30  (그립)
+```
+
+---
+
+#### 부드럽게 이동 (moveToPosition)
+
+**로봇 팔을 목표 위치로 부드럽게 이동시켜요!**
+
+```cpp
+void moveToPosition(int target[]) {
+  bool moving = true;
+  
+  while (moving) {
+    handleCommand();  // 이동 중에도 명령 체크
+    
+    moving = false;
+    
+    // 4개 서보 모두 체크
+    for (int i = 0; i < 4; i++) {
+      if (angles[i] < target[i]) {
+        angles[i]++;     // 1도 증가
+        moving = true;
+      }
+      else if (angles[i] > target[i]) {
+        angles[i]--;     // 1도 감소
+        moving = true;
+      }
+      servo[i].write(angles[i]);  // 서보에 각도 적용
+    }
+    
+    delay(15);  // 15ms 대기 (부드러운 움직임)
+  }
+}
+```
+
+**왜 1도씩 움직이나요?**
+
+한 번에 큰 각도로 움직이면:
+- ❌ 로봇 팔이 빠르게 움직여서 위험
+- ❌ 모터에 부담
+- ❌ 물건을 떨어뜨릴 수 있음
+
+1도씩 천천히:
+- ✅ 부드러운 움직임
+- ✅ 안전
+- ✅ 정확한 제어
+
+**예시:**
+
+현재 베이스 각도: 90°
+목표 베이스 각도: 45°
+
+```
+1회: 90° → 89° (1도 감소)
+2회: 89° → 88°
+3회: 88° → 87°
+...
+45회: 46° → 45° (도착!)
+```
+
+총 45번 반복, 45번 × 15ms = 675ms (약 0.7초)
+
+---
+
+#### 현재 위치 저장 (saveCurrentPosition)
+
+**🔥 이게 가장 중요! 커스터마이징의 핵심!**
+
+**조이스틱으로 원하는 위치로 이동한 후, 이 함수로 저장해요!**
+
+```cpp
+void saveCurrentPosition() {
+  // 1단계: 서보 일시 정지 (안전하게 저장하기 위해)
+  for (int i = 0; i < 4; i++) {
+    servo[i].detach();  // 서보 분리
+  }
+  delay(30);
+  
+  // 2단계: 현재 모드에 따라 저장 위치 결정
+  int addr;
+  const char* zoneName;
+  
+  switch (currentMode) {
+    case MODE_RED:
+      addr = EEPROM_ADDR_RED;    // 주소 4
+      zoneName = "Red";
+      break;
+    case MODE_GREEN:
+      addr = EEPROM_ADDR_GREEN;  // 주소 8
+      zoneName = "Green";
+      break;
+    case MODE_BLUE:
+      addr = EEPROM_ADDR_BLUE;   // 주소 12
+      zoneName = "Blue";
+      break;
+    case MODE_HOME:
+    default:
+      addr = EEPROM_ADDR_HOME;   // 주소 0
+      zoneName = "Home";
+      break;
+  }
+  
+  // 3단계: 현재 각도를 EEPROM에 저장
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(addr + i, angles[i]);
+    delay(4);  // EEPROM 쓰기 대기
+  }
+  
+  // 4단계: 서보 재연결
+  for (int i = 0; i < 4; i++) {
+    servo[i].attach(pin[i]);
+    servo[i].write(angles[i]);
+    delay(15);
+  }
+  
+  Serial.print("[Save] ");
+  Serial.print(zoneName);
+  Serial.print(": ");
+  printAngles(angles);
+  
+  sendStatus("saved");  // 앱에 "saved_" 전송
+}
+```
+
+**실제 사용 예시:**
+
+빨강 구역을 왼쪽 앞(45°, 90°, 80°, 30°)으로 설정하고 싶어요.
+
+```
+[1단계] 조이스틱으로 이동
+  - 베이스를 왼쪽(45°)으로
+  - 팔꿈치를 중간(90°)으로
+  - 손목을 약간 위(80°)으로
+  - 그립을 잡기 자세(30°)로
+  
+[2단계] 앱에서 "redCheck_" 전송
+  → currentMode = MODE_RED
+  
+[3단계] 앱에서 "save_" 전송
+  → saveCurrentPosition() 실행
+  → EEPROM 주소 4: 45 저장
+  → EEPROM 주소 5: 90 저장
+  → EEPROM 주소 6: 80 저장
+  → EEPROM 주소 7: 30 저장
+  → 완료!
+```
+
+이제 언제든지 `redCheck_` 명령만 보내면 로봇이 자동으로 이 위치로 가요!
+
+---
+
+#### 개수 데이터 전송 (sendCountData)
+
+**현재 색상별 개수를 앱에 전송해요!**
+
+```cpp
+void sendCountData() {
+  BTSerial.print(redCount);      // 빨강 개수
+  BTSerial.print(",");           // 쉼표
+  BTSerial.print(greenCount);    // 초록 개수
+  BTSerial.print(",");           // 쉼표
+  BTSerial.print(blueCount);     // 파랑 개수
+  BTSerial.println("_");         // 언더스코어 + 줄바꿈
+}
+```
+
+**출력 예시:**
+```
+빨강 12개, 초록 7개, 파랑 1개일 때
+→ "12,7,1_\n" 전송
+```
+
+---
+
+### 6.5 색상 구역 커스터마이징 완전 가이드
+
+**🎨 여러분만의 구역 위치를 만들어보세요!**
+
+#### 방법 1: 조이스틱으로 직접 설정
+
+**가장 쉽고 직관적인 방법이에요!**
+
+**단계별 설정:**
+
+**1️⃣ Home 위치 설정 (기본 자세)**
+
+```
+목표: 로봇 팔의 기본 대기 위치
+
+[조이스틱 조작]
+- 베이스: 90° (정면)
+- 팔꿈치: 80° (약간 들린 상태)
+- 손목: 90° (수평)
+- 그립: 15° (열림)
+
+[앱에서 명령 전송]
+1. currentMode는 기본적으로 MODE_HOME
+2. "save_" 전송
+3. EEPROM 주소 0~3에 저장됨
+4. "saved_" 응답 받음
+
+[확인]
+- Serial Monitor: [Save] Home: 90,80,90,15
+```
+
+**2️⃣ 빨강 구역 설정 (왼쪽 앞)**
+
+```
+목표: 빨강 물건을 놓을 위치
+
+[조이스틱 조작]
+- 베이스: 45° (왼쪽으로 회전)
+- 팔꿈치: 90° (중간 높이)
+- 손목: 80° (약간 위)
+- 그립: 30° (잡기 자세)
+
+[앱에서 명령 전송]
+1. "redCheck_" 전송 → currentMode = MODE_RED
+2. "save_" 전송
+3. EEPROM 주소 4~7에 저장됨
+
+[확인]
+- Serial Monitor: [Save] Red: 45,90,80,30
+```
+
+**3️⃣ 초록 구역 설정 (정면)**
+
+```
+목표: 초록 물건을 놓을 위치
+
+[조이스틱 조작]
+- 베이스: 90° (정면)
+- 팔꿈치: 90° (중간 높이)
+- 손목: 90° (수평)
+- 그립: 30° (잡기 자세)
+
+[앱에서 명령 전송]
+1. "greenCheck_" 전송 → currentMode = MODE_GREEN
+2. "save_" 전송
+3. EEPROM 주소 8~11에 저장됨
+
+[확인]
+- Serial Monitor: [Save] Green: 90,90,90,30
+```
+
+**4️⃣ 파랑 구역 설정 (오른쪽 앞)**
+
+```
+목표: 파랑 물건을 놓을 위치
+
+[조이스틱 조작]
+- 베이스: 135° (오른쪽으로 회전)
+- 팔꿈치: 90° (중간 높이)
+- 손목: 80° (약간 위)
+- 그립: 30° (잡기 자세)
+
+[앱에서 명령 전송]
+1. "blueCheck_" 전송 → currentMode = MODE_BLUE
+2. "save_" 전송
+3. EEPROM 주소 12~15에 저장됨
+
+[확인]
+- Serial Monitor: [Save] Blue: 135,90,80,30
+```
+
+---
+
+#### 방법 2: 코드에서 직접 수정
+
+**프로그래머를 위한 방법!**
+
+아두이노 코드에서 각도 값을 직접 설정할 수 있어요.
+
+```cpp
+// setup() 함수에 추가
+void setup() {
+  // ... 기존 코드 ...
+  
+  // 초기 구역 위치 설정 (한 번만 실행)
+  initializeZones();
+}
+
+// 구역 초기화 함수 추가
+void initializeZones() {
+  // Home 위치
+  int homeAngles[4] = {90, 80, 90, 15};
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(EEPROM_ADDR_HOME + i, homeAngles[i]);
+  }
+  
+  // 빨강 구역 (왼쪽 앞)
+  int redAngles[4] = {45, 90, 80, 30};
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(EEPROM_ADDR_RED + i, redAngles[i]);
+  }
+  
+  // 초록 구역 (정면)
+  int greenAngles[4] = {90, 90, 90, 30};
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(EEPROM_ADDR_GREEN + i, greenAngles[i]);
+  }
+  
+  // 파랑 구역 (오른쪽 앞)
+  int blueAngles[4] = {135, 90, 80, 30};
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(EEPROM_ADDR_BLUE + i, blueAngles[i]);
+  }
+  
+  Serial.println("[Init] Zones initialized!");
+}
+```
+
+**⚠️ 주의:** 이 코드를 한 번 실행한 후, `initializeZones()` 호출을 주석 처리하세요!
+
+```cpp
+void setup() {
+  // ... 기존 코드 ...
+  
+  // initializeZones();  // ← 주석 처리 (한 번만 실행)
+}
+```
+
+왜? EEPROM에 계속 쓰면 수명이 단축돼요!
+
+---
+
+#### 방법 3: Serial Monitor로 실시간 확인
+
+**디버깅과 미세 조정에 최적!**
+
+```cpp
+// loop() 함수에 추가
+void loop() {
+  handleCommand();
+  
+  if (!isRunning) {
+    handleJoystick();
+    
+    // 1초마다 현재 각도 출력
+    static unsigned long lastPrint = 0;
+    if (millis() - lastPrint > 1000) {
+      Serial.print("Current: ");
+      printAngles(angles);
+      lastPrint = millis();
+    }
+  }
+}
+```
+
+이렇게 하면 조이스틱을 움직이면서 실시간으로 각도를 볼 수 있어요!
+
+```
+Current: 45,90,80,30
+Current: 46,90,80,30
+Current: 47,90,80,30
+...
+```
+
+원하는 위치에 도달하면 그 각도를 기억했다가 코드에 입력!
+
+---
+
+#### EEPROM 메모리 맵 (완전판)
+
+**어느 주소에 무엇이 저장되는지 한눈에!**
+
+```cpp
+/* EEPROM 메모리 구조 */
+
+// Home 위치 (초기 자세)
+EEPROM[0] = 90;   // 서보1 (베이스)
+EEPROM[1] = 80;   // 서보2 (팔꿈치)
+EEPROM[2] = 90;   // 서보3 (손목)
+EEPROM[3] = 15;   // 서보4 (그립)
+
+// 빨강 구역
+EEPROM[4] = 45;   // 서보1
+EEPROM[5] = 90;   // 서보2
+EEPROM[6] = 80;   // 서보3
+EEPROM[7] = 30;   // 서보4
+
+// 초록 구역
+EEPROM[8] = 90;   // 서보1
+EEPROM[9] = 90;   // 서보2
+EEPROM[10] = 90;  // 서보3
+EEPROM[11] = 30;  // 서보4
+
+// 파랑 구역
+EEPROM[12] = 135; // 서보1
+EEPROM[13] = 90;  // 서보2
+EEPROM[14] = 80;  // 서보3
+EEPROM[15] = 30;  // 서보4
+
+// 개수 카운트
+EEPROM[16] = 12;  // 빨강 개수
+EEPROM[17] = 7;   // 초록 개수
+EEPROM[18] = 1;   // 파랑 개수
+```
+
+---
+
+#### 각도 범위 제한
+
+**로봇 팔이 너무 많이 움직여서 부딪히지 않도록!**
+
+코드에서 각도 범위를 설정할 수 있어요:
+
+```cpp
+// 각도 범위 (코드 상단에 정의됨)
+int minAngles[4] = {0, 50, 60, 10};    // 최소 각도
+int maxAngles[4] = {180, 110, 120, 60}; // 최대 각도
+```
+
+**커스터마이징:**
+
+여러분의 로봇 팔 구조에 맞게 수정하세요!
+
+```cpp
+// 예: 베이스는 45~135도만 움직이게
+int minAngles[4] = {45, 50, 60, 10};
+int maxAngles[4] = {135, 110, 120, 60};
+```
+
+이렇게 하면 베이스가 45도 미만이나 135도 초과로 가지 않아요!
+
+---
+
+#### 테스트 명령어 순서
+
+**처음 설정할 때 이 순서대로 하세요!**
+
+```
+1. 전원 ON
+   → Serial Monitor: [System] Ready
+
+2. Home 위치 설정
+   앱: (조이스틱으로 이동)
+   앱: save_
+   응답: saved_
+   
+3. 빨강 구역 설정
+   앱: redCheck_
+   앱: (조이스틱으로 이동)
+   앱: save_
+   응답: saved_
+   
+4. 초록 구역 설정
+   앱: greenCheck_
+   앱: (조이스틱으로 이동)
+   앱: save_
+   응답: saved_
+   
+5. 파랑 구역 설정
+   앱: blueCheck_
+   앱: (조이스틱으로 이동)
+   앱: save_
+   응답: saved_
+   
+6. 테스트
+   앱: redCheck_
+   → 로봇이 빨강 구역으로 이동!
+   
+   앱: greenCheck_
+   → 로봇이 초록 구역으로 이동!
+   
+   앱: blueCheck_
+   → 로봇이 파랑 구역으로 이동!
+   
+7. 완성! 🎉
 ```
 
 ---
@@ -2181,6 +2901,74 @@ flowchart TD
 - [ ] **6단계**: 앱에서 `save_` 전송
 - [ ] **7단계**: 초록, 파랑 구역도 반복
 - [ ] **8단계**: 모든 구역 설정 완료!
+
+---
+
+#### 아두이노 코드에서 일어나는 일
+
+**각 단계에서 아두이노가 하는 일:**
+
+**1️⃣ redCheck_ 수신 시:**
+```cpp
+// processCommand()에서 실행
+if (strcmp(cmdBuffer, "redCheck") == 0) {
+  goToRedZone();  // 빨강 구역 함수 호출
+}
+
+// goToRedZone() 내부
+void goToRedZone() {
+  currentMode = MODE_RED;  // ← 모드 변경! (중요)
+  // EEPROM에서 빨강 구역 위치 읽고 이동
+  // 개수 증가
+}
+```
+
+**2️⃣ save_ 수신 시:**
+```cpp
+// processCommand()에서 실행
+if (strcmp(cmdBuffer, "save") == 0) {
+  saveCurrentPosition();  // 저장 함수 호출
+}
+
+// saveCurrentPosition() 내부
+void saveCurrentPosition() {
+  // currentMode를 확인!
+  switch (currentMode) {
+    case MODE_RED:
+      addr = EEPROM_ADDR_RED;  // 주소 4
+      break;
+    // ...
+  }
+  
+  // 현재 각도를 EEPROM에 저장
+  for (int i = 0; i < 4; i++) {
+    EEPROM.write(addr + i, angles[i]);
+  }
+}
+```
+
+**3️⃣ 다시 redCheck_ 수신 시:**
+```cpp
+// goToRedZone() 내부
+void goToRedZone() {
+  int redAngles[4];
+  
+  // EEPROM에서 저장된 위치 읽기
+  loadPosition(EEPROM_ADDR_RED, redAngles);
+  // → [45, 90, 80, 30] 읽음
+  
+  // 로봇 팔 이동
+  moveToPosition(redAngles);
+  // → 서보 모터가 해당 각도로 이동!
+}
+```
+
+**핵심 포인트:**
+- `currentMode` 변수가 어느 구역을 저장할지 결정해요
+- `redCheck_` 명령은 2가지 역할:
+  1. 모드 변경 (MODE_RED)
+  2. 빨강 구역으로 이동
+- `save_` 명령은 현재 모드에 맞는 EEPROM 주소에 저장
 
 ### 8.3 자동 실행하기
 
